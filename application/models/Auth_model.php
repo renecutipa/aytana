@@ -2,7 +2,6 @@
 
 class Auth_model extends CI_Model
 {
-
     public function login($data) {
 
         $query = $this->db->query("
@@ -14,13 +13,11 @@ class Auth_model extends CI_Model
         $row = $query->row();
 
         if (isset($row)){
-
             $data = array(
                 'last_login' => date("Y-m-d H:i:s")
             );
             $this->db->where('id_user', $row->id_user);
             $this->db->update('user', $data);
-
             return $row;
         }else{
             return false;
@@ -28,7 +25,6 @@ class Auth_model extends CI_Model
 
 
     }
-
 
     public function getChecked($idUser) {
         $query = $this->db->query("

@@ -23,7 +23,7 @@ if (isset($this->session->userdata['logged_in'])) {
     echo "Your Username is " . $username;
     echo "<br/>";
     ?>
-    <b id="logout"><a href="logout">Logout</a></b>
+    <b id="logout"><a href="auth/logout">Logout</a></b>
 </div>
 <br/>
 </body>

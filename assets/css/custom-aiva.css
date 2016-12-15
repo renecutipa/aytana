@@ -1,0 +1,20 @@
+.navbar-caja a{
+	color:#FFF !important;
+	font-weight: bold;
+	font-size: 14px !important;
+}
+.sale_input_text_quantity{
+	width:60px; 
+	text-align:center; 
+	font-size: 14px; 
+	font-weight: bold; 
+}
+.sale_input_text_price{
+	width:70px; 
+	text-align:center; 
+	font-size: 14px; 
+	font-weight: bold; 
+}
+.sale_btns{
+	font-size: 14px;
+}

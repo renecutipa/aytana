@@ -16,41 +16,33 @@ class Auth extends CI_Controller {
     }
 
     public function login(){
-        $this->form_validation->set_rules('username', 'Username', 'trim|required');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required');
+        $data = array(
+            'username' => $this->input->post('username'),
+            'password' => $this->input->post('password')
+        );
 
-        if ($this->form_validation->run() == FALSE) {
-            if(isset($this->session->userdata['logged_in'])){
-                $this->load->view('board/admin');
+        $result = $this->Auth_model->login($data);
+        if ($result != false) {
+            $result = $this->Auth_model->getChecked($result->id_user);
+            if ($result != false) {
+                $session_data = array(
+                    'id_user' => $result->id_user,
+                    'username' => $result->user_name,
+                );
+
+                $this->session->set_userdata('logged_in', $session_data);
+
+                $login_status = SUCCESS;
+                $response['redirect_url'] = 'principal';
             }else{
-                $this->load->view('auth/login_form');
+                $login_status = INVALID;
             }
         } else {
-            $data = array(
-                'username' => $this->input->post('username'),
-                'password' => $this->input->post('password')
-            );
-
-            $result = $this->Auth_model->login($data);
-            if ($result != false) {
-                $result = $this->Auth_model->getChecked($result->id_user);
-                if ($result != false) {
-                    $session_data = array(
-                        'id_user' => $result->id_user,
-                        'username' => $result->user_name,
-                    );
-
-                    $this->session->set_userdata('logged_in', $session_data);
-
-                    $this->load->view('board/admin');
-                }
-            } else {
-                $data = array(
-                    'error_message' => 'Invalid Username or Password'
-                );
-                $this->load->view('auth/login_form', $data);
-            }
+            $login_status = INVALID;
         }
+        $response['login_status'] = $login_status;
+        echo json_encode($response);
+
     }
 
     public function logout() {
