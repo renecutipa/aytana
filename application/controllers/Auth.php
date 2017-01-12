@@ -24,16 +24,19 @@ class Auth extends CI_Controller {
         $result = $this->Auth_model->login($data);
         if ($result != false) {
             $result = $this->Auth_model->getChecked($result->id_user);
+            $groups = $this->Auth_model->getGroups($result->id_user);
             if ($result != false) {
                 $session_data = array(
                     'id_user' => $result->id_user,
                     'username' => $result->user_name,
+                    'groups' => $groups
                 );
+
 
                 $this->session->set_userdata('logged_in', $session_data);
 
                 $login_status = SUCCESS;
-                $response['redirect_url'] = 'principal';
+                $response['redirect_url'] = base_url().'board';
             }else{
                 $login_status = INVALID;
             }

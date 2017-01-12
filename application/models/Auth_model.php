@@ -41,4 +41,21 @@ class Auth_model extends CI_Model
         }
     }
 
+    public function getGroups($idUser){
+        $query = $this->db->query("
+            SELECT id_group 
+            FROM user_group 
+            WHERE id_user = '".$idUser."'");
+
+        $result = $query->result();
+
+        if(isset($result)){
+            return $result;
+        }else{
+            return false;
+        }
+    }
+
+
+
 }
