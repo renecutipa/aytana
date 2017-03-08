@@ -1,8 +1,8 @@
 
 <?php
 if (isset($user)) {
-    $username = ($user['username']);
-    $groups = ($user['groups']);
+    $username = $user->username;
+    $groups = $user->groups;
 } else {
     header("location: login");
 }

@@ -13,10 +13,16 @@ class Board extends CI_Controller {
     public function index()
     {
         $data['titulo'] = $this->titulo;
-        $data['user'] = $this->session->userdata['logged_in'];
+        $data['user'] = $this->Auth_model->getLogged();
         $this->load->view('board/admin',$data);
     }
 
+    public function getMenu(){
+        $this->load->model('Base_model');
+        $menu = $this->Base_model->getMenu();
 
+        header('Content-Type: application/json');
+        echo $menu;
 
+    }
 }

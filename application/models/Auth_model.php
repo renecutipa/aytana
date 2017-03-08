@@ -57,5 +57,10 @@ class Auth_model extends CI_Model
     }
 
 
+    function getLogged() {
+        return ( object ) $this->session->userdata();
+    }
+
+
 
 }

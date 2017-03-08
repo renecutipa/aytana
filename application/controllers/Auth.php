@@ -32,8 +32,7 @@ class Auth extends CI_Controller {
                     'groups' => $groups
                 );
 
-
-                $this->session->set_userdata('logged_in', $session_data);
+                $this->session->set_userdata($session_data);
 
                 $login_status = SUCCESS;
                 $response['redirect_url'] = base_url().'board';
