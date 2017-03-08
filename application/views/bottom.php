@@ -1,9 +1,4 @@
-			<footer class="main">
 
-
-				&copy; 2016 <strong>AIVA</strong>
-
-			</footer>
 		</div>
 
 

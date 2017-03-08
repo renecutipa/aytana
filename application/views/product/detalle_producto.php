@@ -1,14 +1,18 @@
 <style>
 .modal-dialog{
-	width:950px;
+	width:540px;
 }
 </style>
 <div class="main-content">
 	<fieldset>
-		<div class="col-xs-8">
-			<img src="<?php echo base_url()."uploads/".$producto->image; ?>" width="550" height="550" />
+		<div>
+			<img src="<?php echo base_url()."uploads/".$producto->image; ?>" width="450" height="450" />
 		</div>
-		<div class="col-xs-4">
+        <div style="font-size: 14px; color: #000;">
+            <?php echo "<b>".$modelo->name ." - ".$modelo->name ." - ".$categoria->name."</b><br>".$producto->description;?>
+        </div>
+        </div>
+		<!--div class="col-xs-4">
             <div class="row">
                 <img src="<?php echo $marca->image;?>"/>
             </div>
@@ -22,6 +26,6 @@
                 <?php echo $producto->description;?>
             </div>
 
-		</div>
+		</div-->
 	</fieldset>
 </div>
