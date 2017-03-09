@@ -436,11 +436,13 @@ function cargarVentaDiaria(){
 		success : function(datos) {
 			response = datos.datos;
 			str = "";
+			suma = 0;
 			for (var i = 0; i < response.length; i++) {
 				str+="<tr>"
-	        	str+="	<td>"+response[i].id_sale+"</td>"
-	        	str+="	<td>"+response[i].name+"</td>"
-	        	str+="	<td style='text-align:right !important'>"+response[i].total_price+"</td>"
+	        	str+="	<td style='text-align:right !important'><button class='btn btn-success'><i class='entypo-popup'></i></button> "+response[i].id_sale+"</td>"
+                str+="	<td>"+"</td>"
+	        	str+="	<td>"+response[i].name+"<br>"+response[i].dni_ruc+"<br>"+response[i].address+"</td>"
+	        	str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_price+"</td>"
 	        	str+="	<td>"+response[i].id_user+"</td>"
 	        	str+="	<td>"+response[i].sale_date+"</td>"
 	        	if(response[i].status == 1){
@@ -450,7 +452,10 @@ function cargarVentaDiaria(){
 	        	}
 	        	
 	        	str+="</tr>"
+
+				suma += parseFloat(response[i].total_price);
 			}
+            $('#total_sale').html("S/. "+suma.toFixed(2));
 
 			$('#sales_list tbody').html(str);
 		}

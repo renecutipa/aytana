@@ -1,9 +1,3 @@
-<?php
-if(isset($this->session->userdata['logged_in'])){
-    redirect(base_url()."principal");
-}
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

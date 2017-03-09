@@ -7,7 +7,49 @@ if (isset($user->username)) {
 <?php $this->load->view('top');?>
 <!-- ----------------   CONTENIDO ----------------------- -->
 
-<div>
+<h2><i class="entypo-tag"></i> COTIZACI&Oacute;N</h2>
+
+<br />
+
+<div>	
+	<div class="col-md-6 col-xs-6">
+		<div class="panel panel-dark" data-collapsed="0">
+			
+			<!-- panel head -->
+			<div class="panel-heading">
+				<div class="panel-title">Cotizaci&oacute;n</div>
+			</div>
+			
+			<!-- panel body -->
+			<div class="panel-body">
+				
+				<button type="button" class="btn btn-success btn-lg" onclick="javascript:entrance()"><strong>INGRESAR A STOCK</strong></button>
+				
+				<!--input type="text" class="btn-default btn-lg h3 pull-right text-right" readonly value="0.00"-->
+				
+				<hr/>
+				<form id="form_entrance" action="welp">
+					<table class="table table-bordered stripe oscuro" id="entranceList">
+							<thead>
+					            <tr class="encabezado">
+					                <th style="width:10%">Codigo</th>
+					                <th style="width:35%">Descripcion</th>
+					                <th style="width:20%">Cantidad</th>
+					                <th style="width:15%">P.Compra</th>
+					                <th style="width:15%">P.Venta</th>
+					                <th style="width:0"></th>			                
+					            </tr>
+					        </thead>
+					        <tbody>				        	
+
+					        </tbody>
+					        
+					</table>
+				</form>
+			</div>
+			
+		</div>
+	</div>
 	<div class=" col-md-6 col-xs-6">
 		<div class="panel panel-dark" data-collapsed="0">
 			
@@ -25,7 +67,7 @@ if (isset($user->username)) {
 						</select>
 					</div>
 					<div class="col-sm-3">
-						<select class="form-control input-lg" id="sale_model" onchange="getCate	gorias()">
+						<select class="form-control input-lg" id="sale_model" onchange="getCategorias()">
 							<option value="">- Modelo -</option>
 						</select>
 					</div>
@@ -39,8 +81,8 @@ if (isset($user->username)) {
 						<thead>
 				            <tr class="encabezado">
 				            	<th style="width:10%">ID</th>
-				            	<th style="width:10%">Codigo</th>
-				            	<th style="width:1%">IMG</th>
+				                <th style="width:10%">Codigo</th>
+				                <th style="width:1%">IMG</th>
 				                <th style="width:33%">Descripcion</th>
 				                <th style="width:7%">Ub.</th>
 				                <th style="width:4%">Cant.</th>
@@ -53,46 +95,6 @@ if (isset($user->username)) {
 				        </thead>
 				        
 				</table>		
-			</div>
-			
-		</div>
-	</div>
-	<div class="col-md-6 col-xs-6">
-		<div class="panel panel-dark" data-collapsed="0">
-			
-			<!-- panel head -->
-			<div class="panel-heading">
-				<div class="panel-title">Cotizaci&oacute;n</div>
-			</div>
-			
-			<!-- panel body -->
-			<div class="panel-body">
-				
-				<button type="button" class="btn btn-success btn-lg" onclick="javascript:venta()"><strong>VENDER</strong></button>
-				<!--button type="button" class="btn btn-blue btn-lg">Guardar</button>
-				<button type="button" class="btn btn-info btn-lg">Recuperar</button-->
-				<input type="text" class="btn-default btn-lg h3 pull-right text-right" id="sale_total" readonly value="0.00">
-				
-				<hr/>
-				<form id="form_venta" action="welp">
-					<table class="table table-bordered stripe oscuro" id="saleList">
-							<thead>
-					            <tr class="encabezado">
-					                <th style="width:10%">Codigo</th>
-					                <th style="width:35%">Descripcion</th>
-					                <th style="width:25%">Cantidad</th>
-					                <th style="width:10%">P.Unitario</th>
-					                <th style="width:10%">% Desc.</th>
-					                <th style="width:15%">Importe</th>
-					                <th style="width:0"></th>			                
-					            </tr>
-					        </thead>
-					        <tbody>				        	
-
-					        </tbody>
-					        
-					</table>
-				</form>
 			</div>
 			
 		</div>
@@ -117,7 +119,7 @@ var tableContainer;
 	            "targets": 9,
 	            "data": 0,
 	            "render": function(data, type, full, meta){
-	            	return "<button class='btn btn-blue btn-xs' id='btnSale"+data+"'>></button>";
+	            	return "<button class='btn btn-blue btn-xs' id='btnEntrance"+data+"'><</button>";
 	            }
 	        },
 	        {
@@ -150,7 +152,7 @@ var tableContainer;
 	               $("#table-1_processing").css("display","none");
 	             }
 	         },
-			//"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+			"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 			"bStateSave": true,		
    			"fnRowCallback":function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
    				$(nRow).attr("id",'alarmNum'+aData[0]);
@@ -163,7 +165,7 @@ var tableContainer;
 
 		jQuery('#table-1 tbody').on( 'click', 'button', function () {
         	var data = table.row( jQuery(this).parents('tr') ).data();
-        	addVenta(data[0], data[1],data[8],data[7],data[4],data[6],data[2]);
+        	addEntrance(data[0], data[ 1 ],data[8],data[6],data[7],data[4]);
         	//WELP! ocultar boton
     	});
 		
@@ -179,7 +181,6 @@ function recargarTabla(){
 }
 
 getMarcas();
-
 </script>
 
 <!-- --------------   FIN CONTENIDO --------------------- -->

@@ -376,19 +376,20 @@ class Producto_model extends CI_Model {
 		}
 	}
 
-	function ingresar_stock($id,$cantidad,$precioc,$preciov){
+	function ingresar_stock($id,$cantidad,$precioc,$preciov, $id_user){
 		for($i=0; $i<count($id); $i++){
-			$data = array (
-				'id_store' => '1',
-				'id_product' => $id[$i],
-				'quantity' => $cantidad[$i],
-				'date' => date('Y-m-d h:i:s'),
-				'status' => '1',
-				'users_id_user' => 2
+		    if($cantidad[$i] > 0 ){
+                $data = array (
+                    'id_store' => '1',
+                    'id_product' => $id[$i],
+                    'quantity' => $cantidad[$i],
+                    'date' => date('Y-m-d h:i:s'),
+                    'status' => '1',
+                    'id_user' => $id_user
 
-			);
-			$this->db->insert ( 'entrances', $data );
-			
+                );
+                $this->db->insert ( 'entrances', $data );
+		    }
 		}	
 
 
@@ -405,10 +406,13 @@ class Producto_model extends CI_Model {
 				'cost_price' => $precioc[$i],
 				'sale_price' => $preciov[$i],
 				'modified' => date('Y-m-d h:i:s'),
-				'status' => '1'
+				'status' => '1',
+                'id_user' => $id_user
 			);
 			$this->db->insert ( 'prices', $data );
 		}
+
+		return true;
 	}
 
 	function salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idSale){

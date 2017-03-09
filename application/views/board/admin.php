@@ -1,10 +1,10 @@
 
 <?php
-if (isset($user)) {
+if (isset($user->username)) {
     $username = $user->username;
     $groups = $user->groups;
 } else {
-    header("location: login");
+    header("location: auth");
 }
 ?>
 

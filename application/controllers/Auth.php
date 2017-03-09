@@ -49,10 +49,7 @@ class Auth extends CI_Controller {
 
     public function logout() {
 
-        $session_array = array(
-            'username' => ''
-        );
-        $this->session->unset_userdata('logged_in', $session_array);
+        $this->session->sess_destroy();
         $data['message_display'] = 'Successfully Logout';
         $this->load->view('auth/login_form', $data);
     }

@@ -1,7 +1,7 @@
 <?php
-if (isset($user)) {
+if (isset($user->username)) {
 } else {
-    header("location: login");
+    header("location: auth");
 }
 ?>
 <div class="main-content">

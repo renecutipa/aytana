@@ -46,7 +46,7 @@ class Venta_model extends CI_Model {
 		if ($query->num_rows () > 0) {
 			$i = 0;
 			foreach ( $query->result () as $row ) {
-				$data [$i] ["id_sale"] = $row->id_sale;
+				$data [$i] ["id_sale"] = str_pad($row->id_sale, 6, "0", STR_PAD_LEFT);
 				$data [$i] ["name"] = $row->name;
 				$data [$i] ["dni_ruc"] = $row->dni_ruc;
 				$data [$i] ["address"] = $row->address;
