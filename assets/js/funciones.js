@@ -255,6 +255,7 @@ function venta() {
 			cssClass : 'btn btn-primary',
 			action : function(d) {
 				var frm = $('#form_venta');
+				var tipo = $('#sale_type').val();
 				var nombre = $('#sale_name').val();
 				var doc = $('#sale_doc').val();
 				var address = $('#sale_address').val();
@@ -262,7 +263,7 @@ function venta() {
 				$.ajax({
 					url : UrlBase + "venta/vender",
 					type : 'POST',
-					data : 'nombre='+nombre+'&dni_ruc='+doc+'&direccion='+address+"&"+frm.serialize(),
+					data : 'nombre='+nombre+'&dni_ruc='+doc+'&direccion='+address+"&tipo="+tipo+"&"+frm.serialize(),
 					dataType : "json",
 					success : function(data) {
 						if (data.status == "ok") {
@@ -340,6 +341,48 @@ function calcular_total(){
 			$('#sale_total').val(parseFloat(data).toFixed(2));
 		}
 	});
+}
+
+function anular_venta(id) {
+    var route = "venta/anular";
+    var titulo = "Anular Venta";
+
+    var dialog = new BootstrapDialog({
+        title : titulo,
+        message : "¿Desea anular la venta?",
+        buttons : [ {
+            label : 'Anular',
+            cssClass : 'btn btn-red right',
+            action : function(d) {
+                var frm = $('#form_venta');
+
+                $.ajax({
+                    url : UrlBase + "venta/anular",
+                    type : 'POST',
+                    data : 'id='+id,
+                    dataType : "json",
+                    success : function(data) {
+                        if (data.status == "ok") {
+                            d.close();
+                            cargarVentaDiaria();
+                        } else {
+                        	d.close();
+                        	alert("error");
+                        }
+                    }
+                });
+            }
+        }, {
+            label : 'Cerrar',
+            cssClass : 'btn btn-default',
+            action : function(d) {
+                d.close();
+            }
+        } ]
+    });
+    setTimeout(function() {
+        dialog.open();
+    }, 300);
 }
 
 
@@ -439,8 +482,13 @@ function cargarVentaDiaria(){
 			suma = 0;
 			for (var i = 0; i < response.length; i++) {
 				str+="<tr>"
-	        	str+="	<td style='text-align:right !important'><button class='btn btn-success'><i class='entypo-popup'></i></button> "+response[i].id_sale+"</td>"
-                str+="	<td>"+"</td>"
+				str+= "<td><button class='btn btn-success' onclick='anular_venta("+response[i].id+")'><i class='entypo-popup'></i></button></td>"
+	        	str+="	<td style='text-align:right !important'> "+response[i].id_sale+"</td>"
+                if(response[i].ticket == null || response[i].ticket == 0){
+                    str+="	<td></td>"
+				}else{
+                    str+="	<td style='text-align:right !important'>"+response[i].ticket+"</td>"
+				}
 	        	str+="	<td>"+response[i].name+"<br>"+response[i].dni_ruc+"<br>"+response[i].address+"</td>"
 	        	str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_price+"</td>"
 	        	str+="	<td>"+response[i].id_user+"</td>"
@@ -455,6 +503,7 @@ function cargarVentaDiaria(){
 
 				suma += parseFloat(response[i].total_price);
 			}
+
             $('#total_sale').html("S/. "+suma.toFixed(2));
 
 			$('#sales_list tbody').html(str);

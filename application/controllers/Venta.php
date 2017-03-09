@@ -38,13 +38,14 @@ class Venta extends CI_Controller {
 		$desc = $this->input->post ( "desc" );
 		$precioc = $this->input->post ("precioc");
 
+		$tipo = $this->input->post("tipo");
 		$nombre = $this->input->post ("nombre");
 		$dni_ruc = $this->input->post ("dni_ruc");
 		$direccion = $this->input->post ("direccion");
 
 		$id_user = $this->Auth_model->getLogged()->id_user;
 
-		$idVenta = $this->Venta_model->registrar_venta($nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user);
+		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user);
 
 		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta);
 		//COMPROBANTE
@@ -70,6 +71,22 @@ class Venta extends CI_Controller {
 
 		echo $this->Venta_model->getTotal($cantidad, $preciou, $desc);
 	}
+
+	public function anular(){
+		$id = $this->input->post ("id");
+
+        $anular = $this->Venta_model->anular($id);
+
+        if($anular){
+            $response ['status'] = "ok";
+            $response ['message'] = "Operacion realizada con exito";
+        }else{
+            $response ['status'] = "fail";
+            $response ['message'] = "Operacion fallida";
+        }
+
+        echo json_encode ( $response );
+    }
 		
 }
 

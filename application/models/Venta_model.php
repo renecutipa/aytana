@@ -4,12 +4,20 @@ class Venta_model extends CI_Model {
 		parent::__construct ();
 	}
 	
-	function registrar_venta($nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user) {
+	function registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user) {
 		$total = 0;
 		for($i=0; $i<count($cantidad); $i++){
 			$pu = $preciou[$i] - ($preciou[$i] * $desc[$i]/100);
 
 			$total += $cantidad[$i]*$pu;
+		}
+		$ticket = NULL;
+		$tipo_documento = 'NOTA DE VENTA';
+		if($tipo == 2){
+			$data = array('status'=>'1');
+			$this->db->insert ( 'tickets', $data );
+			$ticket = $this->db->insert_id();
+            $tipo_documento = 'TICKET DE VENTA';
 		}
 
 		$data = array(
@@ -19,11 +27,12 @@ class Venta_model extends CI_Model {
 			'name' => $nombre,
 			'dni_ruc' => $dni_ruc,
 			'address' => $direccion,
-			'document_type' => 'NOTA DE VENTA',
-			'document_number' => '1',
+			'document_type' => $tipo_documento,
+			'document_number' => $ticket,
 			'status' => '1',
 			'sale_date' => date('Y-m-d h:i:s'),
-			'id_user' => $id_user
+			'id_user' => $id_user,
+			'id_ticket' => $ticket
 		);
 		$this->db->insert ( 'sales', $data );
 		$idVenta = $this->db->insert_id();
@@ -40,18 +49,20 @@ class Venta_model extends CI_Model {
 	}
 
 	function listar_ventas($fecha){
-		$sql = "SELECT * FROM sales WHERE DATE(sale_date) = '".$fecha."' ORDER BY id_sale DESC";
+		$sql = "SELECT s.id_sale, s.name, s.dni_ruc, s.address, s.total_price, s.sale_date, s.status, u.user_name, s.id_ticket FROM sales as s LEFT JOIN user as u ON u.id_user = s.id_user WHERE DATE(s. sale_date) = '".$fecha."' ORDER BY s.id_sale DESC";
 		$query = $this->db->query ( $sql );
 		$data="";
 		if ($query->num_rows () > 0) {
 			$i = 0;
 			foreach ( $query->result () as $row ) {
 				$data [$i] ["id_sale"] = str_pad($row->id_sale, 6, "0", STR_PAD_LEFT);
+                $data [$i] ["id"] = $row->id_sale;
+				$data [$i] ["ticket"] = $row->id_ticket;
 				$data [$i] ["name"] = $row->name;
 				$data [$i] ["dni_ruc"] = $row->dni_ruc;
 				$data [$i] ["address"] = $row->address;
 				$data [$i] ["total_price"] = $row->total_price;
-				$data [$i] ["id_user"] = "1";
+				$data [$i] ["id_user"] = $row->user_name;
 				$data [$i] ["sale_date"] = $row->sale_date;
 				$data [$i] ["status"] = $row->status;
 
@@ -98,7 +109,7 @@ class Venta_model extends CI_Model {
 
 
 			$cmp.="----------------------------------------\n";
-			$cmp.=str_pad("NOTA DE VENTA", 40, " ", STR_PAD_BOTH)."\n"; 
+			$cmp.=str_pad($venta->document_type, 40, " ", STR_PAD_BOTH)."\n";
 			$cmp.="----------------------------------------\n";
 			$cmp.="COD   DESCRIPCION           Cant Importe\n";
 			$cmp.="----------------------------------------\n";
@@ -133,8 +144,8 @@ class Venta_model extends CI_Model {
 
 
 			$cmp.="----------------------------------------\n";
-			$cmp.=str_pad("NOTA DE VENTA", 40, " ", STR_PAD_BOTH)."\n"; 
-			$cmp.="----------------------------------------\n";
+			$cmp.=str_pad($venta->document_type, 40, " ", STR_PAD_BOTH)."\n";
+            $cmp.="----------------------------------------\n";
 			$cmp.="COD  DESCRIPCION   %D   P.U. Can. Subtot\n";
 			$cmp.="----------------------------------------\n";
 			//     1234567890123456789012345678901234567890
@@ -162,6 +173,18 @@ class Venta_model extends CI_Model {
 		}
 
 	}
+
+    function anular($id){
+        $data = array(
+            'status' => 0
+        );
+        $this->db->where ( "id_sale", $id );
+        if ($this->db->update ( 'sales', $data )) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

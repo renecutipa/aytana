@@ -9,10 +9,9 @@ if (isset($user->username)) {
 <fieldset>
 	<div class="form-group col-xs-6 col-sm-6">
 		<label>Documento</label>
-		<select class="form-control">
-			<option>PROFORMA</option>
-			<option>TICKET DE VENTA</option>
-			<option>NOTA DE VENTA</option>
+		<select class="form-control" id="sale_type">
+			<option value="1">NOTA DE VENTA</option>
+			<option value="2">TICKET DE VENTA</option>
 		</select>
 	</div>
 	<div class="form-group col-xs-6 col-sm-6">
