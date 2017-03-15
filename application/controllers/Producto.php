@@ -124,6 +124,11 @@ class Producto extends CI_Controller {
 		
 		echo json_encode ( $response );
 	}
+
+	public function getKardex(){
+        $id = $this->input->get ('id');
+        echo $this->Producto_model->getKardex($id);
+	}
 }
 
 ?>

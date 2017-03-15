@@ -25,7 +25,7 @@ if (isset($user->username)) {
 						</select>
 					</div>
 					<div class="col-sm-3">
-						<select class="form-control input-lg" id="sale_model" onchange="getCate	gorias()">
+						<select class="form-control input-lg" id="sale_model" onchange="getCategorias()">
 							<option value="">- Modelo -</option>
 						</select>
 					</div>

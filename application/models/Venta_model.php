@@ -102,7 +102,7 @@ class Venta_model extends CI_Model {
 
 			$venta = $query->row();
 
-			$sql = "SELECT LPAD(d.id_product,5,0) as id ,p.name, d.quantity, d.unit_price FROM departures as d 
+			$sql = "SELECT LPAD(d.id_product,5,0) as id ,p.name, d.quantity, d.saled_price FROM stock as d 
 	LEFT JOIN products as p ON d.id_product = p.id_product WHERE id_sale='".$idVenta."'";
 			$query = $this->db->query ( $sql );
 
@@ -118,7 +118,10 @@ class Venta_model extends CI_Model {
 				$i = 0;
 
 				foreach ( $query->result () as $row ) {
-					$cmp.=str_pad($row->id, 6).substr(str_pad($row->name, 22),0,21).str_pad($row->quantity,4,' ',STR_PAD_LEFT).str_pad(number_format($row->quantity*$row->unit_price,2),9,' ',STR_PAD_LEFT)."\n";
+					$cmp.=str_pad($row->id, 6)
+						.substr(str_pad($row->name, 22),0,21)
+						.str_pad($row->quantity,4,' ',STR_PAD_LEFT)
+						.str_pad(number_format($row->quantity*$row->saled_price,2),9,' ',STR_PAD_LEFT)."\n";
 					$i++;
 				}
 			}
@@ -137,7 +140,7 @@ class Venta_model extends CI_Model {
 
 			$venta = $query->row();
 
-			$sql = "SELECT LPAD(d.id_product,4,0) as id ,p.name, d.quantity, d.unit_price, d.discount FROM departures as d 
+			$sql = "SELECT LPAD(d.id_product,4,0) as id ,p.name, d.quantity, d.saled_price, d.discount FROM stock as d 
 	LEFT JOIN products as p ON d.id_product = p.id_product WHERE id_sale='".$idVenta."'";
 			$query = $this->db->query ( $sql );
 
@@ -156,9 +159,9 @@ class Venta_model extends CI_Model {
 					$cmp.=str_pad($row->id, 5)
 					.str_pad(substr(str_pad($row->name, 14),0,13),14)
 					.str_pad($row->discount,2,' ',STR_PAD_LEFT)
-					.str_pad(number_format($row->unit_price,2),7,' ',STR_PAD_LEFT)
+					.str_pad(number_format($row->saled_price,2),7,' ',STR_PAD_LEFT)
 					.str_pad($row->quantity,4,' ',STR_PAD_LEFT)
-					.str_pad(number_format($row->quantity*$row->unit_price,2),8,' ',STR_PAD_LEFT)
+					.str_pad(number_format($row->quantity*$row->saled_price,2),8,' ',STR_PAD_LEFT)
 					."\n";
 					$i++;
 				}
@@ -185,7 +188,7 @@ class Venta_model extends CI_Model {
             'status' => 0
         );
         $this->db->where ( "id_sale", $id );
-        $departures = $this->db->update ( 'departures', $data );
+        $departures = $this->db->update ( 'stock', $data );
 
         if ($sale && $departures) {
             return true;

@@ -8,8 +8,8 @@ if (isset($user->username)) {
 <!-- - - - - - - - - - - CONTENIDO - - - - - - - - - - -->
 
 <div>
-    <div class="tabs-vertical-env">
-    <ul class="nav tabs-vertical"><!-- available classes "bordered", "right-aligned" -->
+    <div >
+    <ul class="nav nav-tabs bordered"><!-- available classes "bordered", "right-aligned" -->
         <li class="active">
             <a href="#venta_dia" data-toggle="tab">
                 <span>VENTA DIARIA</span>
@@ -68,39 +68,42 @@ if (isset($user->username)) {
 
         </div>
         <div class="tab-pane" id="kardex">
-            <table width="100%" border="1">
-                <tr>
-                    <td colspan="2" width="25%">Articulo</td>
-                    <td colspan="3" width="25%">AAA</td>
-                    <td colspan="3" width="25%">Existencia Mínima</td>
-                    <td colspan="3" width="25%">10</td>
-                </tr>
-                <tr>
-                    <td colspan="2" width="25%">Método</td>
-                    <td colspan="3" width="25%">f</td>
-                    <td colspan="3" width="25%">Existencia Máxima</td>
-                    <td colspan="3" width="25%">f</td>
-                </tr>
-                <tr>
-                    <td rowspan="2" width="8%">FECHA</td>
-                    <td rowspan="2">DETALLE</td>
-                    <td colspan="3">ENTRADAS</td>
-                    <td colspan="3">SALIDAS</td>
-                    <td colspan="3">EXISTENCIAS</td>
-                </tr>
-                <tr>
+            <button class="btn btn-success" onclick="getKardex();">Get</button>
+            <table width="100%" class="table table-bordered stripe oscuro" id="kardex">
+                <thead>
+                    <tr>
+                        <td colspan="2" width="25%">Articulo</td>
+                        <td colspan="3" width="25%">AAA</td>
+                        <td colspan="3" width="25%">Existencia Mínima</td>
+                        <td colspan="3" width="25%">10</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" width="25%">Método</td>
+                        <td colspan="3" width="25%">f</td>
+                        <td colspan="3" width="25%">Existencia Máxima</td>
+                        <td colspan="3" width="25%">f</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" width="8%">FECHA</td>
+                        <td rowspan="2">DETALLE</td>
+                        <td colspan="3">ENTRADAS</td>
+                        <td colspan="3">SALIDAS</td>
+                        <td colspan="3">EXISTENCIAS</td>
+                    </tr>
+                    <tr>
 
-                    <td>Cantidad</td>
-                    <td>V/Unitario</td>
-                    <td>V/Total</td>
-                    <td>Cantidad</td>
-                    <td>V/Unitario</td>
-                    <td>V/Total</td>
-                    <td>Cantidad</td>
-                    <td>V/Unitario</td>
-                    <td>V/Total</td>
-                </tr>
-
+                        <td>Cantidad</td>
+                        <td>V/Unitario</td>
+                        <td>V/Total</td>
+                        <td>Cantidad</td>
+                        <td>V/Unitario</td>
+                        <td>V/Total</td>
+                        <td>Cantidad</td>
+                        <td>V/Unitario</td>
+                        <td>V/Total</td>
+                    </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>25/12/2017</td>
                     <td></td>
@@ -114,109 +117,22 @@ if (isset($user->username)) {
                     <td></td>
                     <td>a</td>
                 </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr><tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>INVENTARIO FINAL</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
 
 
 

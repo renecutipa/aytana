@@ -18,7 +18,7 @@ if (isset($user->username)) {
 			<!-- panel body -->
 			<div class="panel-body">
 				
-				<button type="button" class="btn btn-success btn-lg" onclick="javascript:entrance()"><strong>INGRESAR A STOCK</strong></button>
+				<button type="button" class="btn btn-success btn-lg" onclick="javascript:income()"><strong>INGRESAR A STOCK</strong></button>
 				
 				<!--input type="text" class="btn-default btn-lg h3 pull-right text-right" readonly value="0.00"-->
 				

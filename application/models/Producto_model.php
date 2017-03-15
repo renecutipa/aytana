@@ -376,11 +376,17 @@ class Producto_model extends CI_Model {
 		}
 	}
 
-	function ingresar_stock($id,$cantidad,$precioc,$preciov, $id_user){
+	function ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user){
+
+        $this->db->insert('incomes', $income_data);
+        $id_income = $this->db->insert_id();
+
 		for($i=0; $i<count($id); $i++){
 		    if($cantidad[$i] > 0 ){
                 $data = array (
+                    'type' => 1,
                     'id_store' => '1',
+                    'id_income' => $id_income,
                     'id_product' => $id[$i],
                     'quantity' => $cantidad[$i],
                     'date' => date('Y-m-d h:i:s'),
@@ -388,7 +394,7 @@ class Producto_model extends CI_Model {
                     'id_user' => $id_user
 
                 );
-                $this->db->insert ( 'entrances', $data );
+                $this->db->insert ( 'stock', $data );
 		    }
 		}	
 
@@ -415,27 +421,59 @@ class Producto_model extends CI_Model {
 		return true;
 	}
 
-	function salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idSale){
+	function salida_stock($id,$cantidad,$preciou, $precioc, $desc, $id_sale, $id_user){
 		for($i=0; $i<count($id); $i++){
-			$pu = $preciou[$i] - ($preciou[$i] * $desc[$i]/100);
+			$unit_price = $preciou[$i] - ($preciou[$i] * $desc[$i]/100); //CALCULANDO PRECIO DESCONTADO
 			$data = array (
+			    'type' => 2,
 				'id_store' => '1',
 				'id_product' => $id[$i],
+                'id_sale' => $id_sale,
 				'quantity' => $cantidad[$i],
-				'unit_price' => $pu,
-				'date' => date('Y-m-d h:i:s'),
+                'date' => date('Y-m-d h:i:s'),
+                'cost_price' => $precioc[$i],
+                'sale_price' => $preciou[$i],
+                'saled_price' => $unit_price,
+                'discount' => $desc[$i],
 				'status' => '1',
-				'id_sale' => $idSale,
-				'id_user' => 1,
-				'cost_price' => $precioc[$i],
-				'sale_price' => $preciou[$i],
-				'discount' => $desc[$i]
+				'id_user' => $id_user
 
 			);
-			$this->db->insert ( 'departures', $data );
+			$this->db->insert ( 'stock', $data );
 		}
 		return true;
 	}
+
+
+    function getKardex($id) {
+        $query = $this->db->query ("SELECT type,id_product, id_sale, id_income, quantity, date, cost_price, saled_price FROM stock WHERE status = 1");
+
+        $data="";
+        if ($query->num_rows () > 0) {
+            $i = 0;
+            foreach ( $query->result () as $row ) {
+                $data [$i] ["type"] = $row->type;
+                $data [$i] ["id_sale"] = $row->id_sale;
+                $data [$i] ["id_income"] = $row->id_income;
+                $data [$i] ["quantity"] = $row->quantity;
+                $data [$i] ["date"] = $row->date;
+                $data [$i] ["cost_price"] = $row->cost_price;
+                $data [$i] ["saled_price"] = $row->saled_price;
+
+                $i ++;
+            }
+        }
+        if($data){
+            $response ['datos'] = $data;
+            $response ['status'] = "ok";
+            $response ['message'] = "Operacion realizada con exito";
+        }else{
+            $response ['status'] = "fail";
+            $response ['message'] = "No se obtuvieron datos";
+        }
+
+        return json_encode($response);
+    }
 }
 
 ?>

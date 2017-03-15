@@ -25,21 +25,47 @@ class Ingreso extends CI_Controller {
 		$this->Producto_model->getListaProductos();
 	}
 
+    public function income(){
+        $data['user'] = $this->Auth_model->getLogged();
+        $data['caja'] = $this->Venta_model->getCaja();
+        $this->load->view ( 'entrance/provider',$data);
+    }
+
 	public function entrance(){
 		$id = $this->input->post ( "id" );
 		$cantidad = $this->input->post ( "cantidad" );
 		$precioc = $this->input->post ( "precioc" );
 		$preciov = $this->input->post ( "preciov" );
+		$document_type = $this->input->post ("document_type");
+        $document_number = $this->input->post ("document_number");
+        $provider = $this->input->post ("provider");
+        $ruc = $this->input->post ("ruc");
 
         $id_user = $this->Auth_model->getLogged()->id_user;
 
-		$result = $this->Producto_model->ingresar_stock($id,$cantidad,$precioc,$preciov, $id_user);
+        $income_data = array (
+        	'id_store' => 1,
+            'document_type' => $document_type,
+            'document_number' => $document_number,
+            'provider' => $provider,
+			'ruc' => $ruc,
+            'date' => date('Y-m-d h:i:s'),
+            'status' => '1',
+            'id_user' => $id_user
+
+        );
+
+        $id_user = $this->Auth_model->getLogged()->id_user;
+
+
+		$result = $this->Producto_model->ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user);
 
         if ($result) {
             $response ['status'] = "ok";
             $response ['message'] = "Operacion realizada con exito";
         } else {
             $response ['status'] = "fail";
+            $response ['message'] = "Error, No se pudo hacer el ingreso de los productos";
         }
 
         echo json_encode ( $response );

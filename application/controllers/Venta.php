@@ -11,8 +11,8 @@ class Venta extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->model('Auth_model');
-		$this->load->model('Producto_model');
-		$this->load->model('Venta_model');
+        $this->load->model('Producto_model');
+        $this->load->model('Venta_model');
 	}
 	
 	public function index() {
@@ -47,7 +47,7 @@ class Venta extends CI_Controller {
 
 		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user);
 
-		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta);
+		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta, $id_user);
 		//COMPROBANTE
 
 		$cmp = $this->Venta_model->emitir_comprobante($idVenta,array_sum($desc));

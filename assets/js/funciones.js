@@ -286,8 +286,6 @@ function venta() {
 							getCaja();
 							$("#sale_total").val("0.00");
 							imprimir(data.cmp);
-							alert(data.message);
-
 						} else {
 							alert(data.message);
 						}
@@ -467,20 +465,55 @@ function removeEntrance(id){
 
 
 
-function entrance(){
-	$.ajax({
-		url : UrlBase + "ingreso/entrance",
-		type : 'POST',
-		data : $("#form_entrance").serialize(),
-		dataType : "json",
-		success : function(data) {
-			
-		}
-	});
-	$("#entranceList tbody").html("");
-	recargarTabla();
-	alert("Ingresos correctos");
+
+function income() {
+    var route = "ingreso/income";
+    var titulo = "Confirmar Ingreso";
+
+    var dialog = new BootstrapDialog({
+        title : titulo,
+        message : $("<div></div>").load(route),
+        buttons : [ {
+            label : 'Ingresar',
+            icon : 'glyphicon glyphicon-send',
+            cssClass : 'btn btn-primary',
+            action : function(d) {
+                var frm = $('#form_entrance');
+                var document_type = $('#document_type').val();
+                var document_number = $('#document_number').val();
+                var provider = $('#provider').val();
+                var ruc = $('#ruc').val();
+                $.ajax({
+                    url : UrlBase + "ingreso/entrance",
+                    type : 'POST',
+                    data : 'document_type='+document_type+'&document_number='+document_number+'&provider='+provider+"&ruc="+ruc+"&"+frm.serialize(),
+                    dataType : "json",
+                    success : function(data) {
+                        if (data.status == "ok") {
+                            d.close();
+                            $("#entranceList tbody").html("");
+                            recargarTabla();
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+        }, {
+            label : 'Cerrar',
+            cssClass : 'btn-red',
+            icon : 'glyphicon glyphicon-ban-circle',
+            action : function(d) {
+                d.close();
+            }
+        } ]
+    });
+    setTimeout(function() {
+        dialog.open();
+    }, 300);
 }
+
+
 
 function cargarVentaDiaria(){
 	$.ajax({
@@ -552,8 +585,70 @@ function detalleProducto(id) {
 }
 
 
+function getKardex(){
+    $.ajax({
+        url : UrlBase + "producto/getKardex",
+        type : 'GET',
+        data : 'id=1',
+        dataType : "json",
+        success : function(data) {
+            response = data.datos;
+            str = "";
+            last_quantity = 0;
+            last_unit_price = 0.00;
+            last_total_val = last_quantity * last_unit_price;
 
+            for (var i = 0; i < response.length; i++) {
+                str+="<tr>";
+                str+="<td>25/12/2017</td>";
+                str+="<td>COMPRA, por venta 0001</td>";
+                if(response[i].id_income == null) {
+                    last_quantity -=  parseInt(response[i].quantity);
+					str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
+                    str += "<td style='text-align: right'>"+response[i].saled_price+"</td>";
+                    str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].saled_price)).toFixed(2)+"</td>";
+                    str += "<td style='text-align: right'>"+last_quantity+"</td>";
+                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+                    str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+                }else if (response[i].id_sale == null){
+                    last_quantity +=  parseInt(response[i].quantity);
+                    str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
+                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+                    str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+                    str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'></td>";
+                    str += "<td style='text-align: right'>"+last_quantity+"</td>";
+                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+                    str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+				}
+                str+="</tr>";
 
+            }
+
+            $('#kardex tbody').html(str);
+
+            var foot = "";
+            foot += "<tr>"
+            foot += "<td></td>";
+            foot += "<td>INVENTARIO FINAL</td>";
+            foot += "<td></td>";
+            foot += "<td></td>";
+            foot += "<td></td>";
+            foot += "<td></td>";
+            foot += "<td></td>";
+            foot += "<td></td>";
+            foot += "<td style='text-align: right'>"+last_quantity+"</td>";
+            foot += "<td style='text-align: right'></td>";
+            foot += "<td style='text-align: right'></td>";
+            foot += "</tr>";
+            $('#kardex tfoot').html(foot);
+        }
+    });
+}
 
 
 
@@ -583,4 +678,74 @@ function imprimir_div(idDiv)
 
     setTimeout(function(){newWin.close();},10);
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function setBarcode(id, codigo,nombre,hasImage){
+    str = "";
+    str+= "<tr id='barcode_item'>";
+    str+= "<td><i>";
+    str+= "<input id='id_product' type='hidden' value='"+id+"'/>"
+    str+= "<input id='code_barcode' type='hidden' value='"+codigo+"'/>"
+    str+= codigo;
+    str+= "</i></td>";
+    if(!hasImage){
+        str+= "<td><strong>";
+        str+= nombre;
+        str+= "</strong></td>";
+    }else{
+        str+= "<td><strong><a onclick='detalleProducto("+id+")'>";
+        str+= "<i class='entypo-picture'></i> "+nombre;
+        str+= "</a></strong></td>";
+    }
+
+    str+= "</tr>";
+
+    $("#item_barcode tbody").html(str);
+    $("#barcode_img").attr("src", "");
+}
+
+function generarBarcode(){
+
+	code = $("#code_barcode").val();
+    id = $("#id_product").val();
+	if(code != undefined){
+	$.ajax({
+		url : UrlBase + "barcode/barcode",
+		type : 'GET',
+		data : 'id='+code,
+		dataType : "json",
+		success : function(data) {
+		}
+	});
+        d = new Date();
+        $("#barcode_img").attr("src", "codebar/"+code+".png?"+d.getTime());
+
+        $("#barcode_print_view").html("<a class='btn btn-success btn-lg' target='_new' href='barcode/pdf_barcode?id="+id+"'>Imprimir</a>");
+	}else{
+		alert("Seleccionar elemento");
+	}
 }
