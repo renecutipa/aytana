@@ -12,13 +12,13 @@ class Producto extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Producto_model');
         $this->load->model('Auth_model');
-		//$this->load->model('Venta_model');
+		$this->load->model('Venta_model');
 		$this->load->helper(array('form', 'url'));
 	}
 	
 	public function index() {
         $data['user'] = $this->Auth_model->getLogged();
-		//$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja();
 		$data['titulo'] = "Productos";
 		$this->load->view ( 'product/lista_productos',$data);
 	}

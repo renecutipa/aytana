@@ -37,7 +37,7 @@
 
 	<ul class="nav navbar-right pull-right">
 		<!-- raw links -->
-				<li class="btn-success navbar-caja"><a href="#">2,540.00</a></li>
+				<li class="btn-success navbar-caja"><a href="#" id="caja_valor"><?php echo $caja?></a></li>
 				<li class="sep"></li>
 				<li>
 				<a href="#" class=""><?php echo $user->username;?></a>

@@ -4,6 +4,19 @@
  * Modificado: 
  */
 
+function getCaja(){
+    $.ajax({
+        url : UrlBase + "venta/getCaja",
+        type : 'GET',
+		data: '',
+        success : function(data) {
+            $("#caja_valor").html(data);
+        }
+    });
+}
+
+
+
  /* UTILIDADES */
 
  function getCategorias() {
@@ -270,6 +283,7 @@ function venta() {
 							d.close();
 							$("#saleList tbody").html("");
 							recargarTabla();
+							getCaja();
 							$("#sale_total").val("0.00");
 							imprimir(data.cmp);
 							alert(data.message);
@@ -320,11 +334,8 @@ function down_quantity(id){
 function calcular_importe(id){
 
 	precio = parseFloat($('#price_prod_'+id).val());
-	console.log(precio);
 	descuento = (parseFloat($('#desc_prod_'+id).val())/100).toFixed(2);
-	console.log(descuento);
 	precio_descontado = precio - (precio * descuento);
-	console.log(precio_descontado);
 
 	precio_final = (parseFloat($('#quantity_prod_'+id).val())*precio_descontado).toFixed(2);
 	$('#importe_prod_'+id).val(precio_final);
@@ -364,6 +375,7 @@ function anular_venta(id) {
                     success : function(data) {
                         if (data.status == "ok") {
                             d.close();
+                            getCaja();
                             cargarVentaDiaria();
                         } else {
                         	d.close();
@@ -496,12 +508,13 @@ function cargarVentaDiaria(){
 	        	if(response[i].status == 1){
 	        		str+="	<td><span class='label label-success'>CORRECTO</span></td>"
 	        	}else{
-	        		str+="	<td><span class='label label-warning'>ANULADO</span></td>"
+	        		str+="	<td><span class='label label-danger'>ANULADO</span></td>"
 	        	}
 	        	
 	        	str+="</tr>"
-
-				suma += parseFloat(response[i].total_price);
+                if(response[i].status == 1){
+					suma += parseFloat(response[i].total_price);
+	        	}
 			}
 
             $('#total_sale').html("S/. "+suma.toFixed(2));
@@ -536,4 +549,38 @@ function detalleProducto(id) {
 	setTimeout(function() {
 		dialog.open();
 	}, 300);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function imprimir_div(idDiv)
+{
+
+    var divToPrint=document.getElementById(idDiv);
+
+    var newWin=window.open('','Imprimir');
+
+    newWin.document.open();
+
+    newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+    newWin.document.close();
+
+    setTimeout(function(){newWin.close();},10);
+
 }

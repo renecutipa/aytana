@@ -8,12 +8,15 @@ class Board extends CI_Controller {
         parent::__construct();
 
         $this->load->model('Auth_model');
+        $this->load->model('Venta_model');
     }
 
     public function index()
     {
         $data['titulo'] = $this->titulo;
         $data['user'] = $this->Auth_model->getLogged();
+        $data['caja'] = $this->Venta_model->getCaja();
+        //echo $data['caja']; exit;
         $this->load->view('board/admin',$data);
     }
 

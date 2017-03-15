@@ -17,6 +17,12 @@ if (isset($user->username)) {
         </li>
 
         <li>
+            <a href="#kardex" data-toggle="tab">
+                <span>KARDEX</span>
+            </a>
+        </li>
+
+        <li>
             <a href="#utilidades" data-toggle="tab">
                 <span>UTILIDADES</span>
             </a>
@@ -26,6 +32,19 @@ if (isset($user->username)) {
 
     <div class="tab-content">
         <div class="tab-pane active" id="venta_dia">
+            <nav class="navbar navbar-inverse" role="navigation">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="javascript:imprimir_div('venta_dia')">Imprimir</a>
+                        </li>
+                        <!--li>
+                            <a href="#">Link</a>
+                        </li-->
+
+                    </ul>
+                </div>
+            </nav>
 
             <h2>Monto Vendido: <span id="total_sale"></span></h2>
             <table class="table table-bordered stripe oscuro" id="sales_list">
@@ -48,7 +67,162 @@ if (isset($user->username)) {
             </table>
 
         </div>
-        <div class="tab-pane" id="cardex"></div>
+        <div class="tab-pane" id="kardex">
+            <table width="100%" border="1">
+                <tr>
+                    <td colspan="2" width="25%">Articulo</td>
+                    <td colspan="3" width="25%">AAA</td>
+                    <td colspan="3" width="25%">Existencia Mínima</td>
+                    <td colspan="3" width="25%">10</td>
+                </tr>
+                <tr>
+                    <td colspan="2" width="25%">Método</td>
+                    <td colspan="3" width="25%">f</td>
+                    <td colspan="3" width="25%">Existencia Máxima</td>
+                    <td colspan="3" width="25%">f</td>
+                </tr>
+                <tr>
+                    <td rowspan="2" width="8%">FECHA</td>
+                    <td rowspan="2">DETALLE</td>
+                    <td colspan="3">ENTRADAS</td>
+                    <td colspan="3">SALIDAS</td>
+                    <td colspan="3">EXISTENCIAS</td>
+                </tr>
+                <tr>
+
+                    <td>Cantidad</td>
+                    <td>V/Unitario</td>
+                    <td>V/Total</td>
+                    <td>Cantidad</td>
+                    <td>V/Unitario</td>
+                    <td>V/Total</td>
+                    <td>Cantidad</td>
+                    <td>V/Unitario</td>
+                    <td>V/Total</td>
+                </tr>
+
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr><tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>25/12/2017</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>a</td>
+                </tr>
+
+
+
+            </table>
+
+        </div>
         <div class="tab-pane" id="vendidos"></div>
         <div class="tab-pane" id="utilidades"></div>
 

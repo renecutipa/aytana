@@ -6,12 +6,7 @@ if (isset($user->username)) {
 ?>
 <?php $this->load->view('top');?>
 <!-- ----------------   CONTENIDO ----------------------- -->
-
-<h2><i class="entypo-tag"></i> COTIZACI&Oacute;N</h2>
-
-<br />
-
-<div>	
+<div>
 	<div class="col-md-6 col-xs-6">
 		<div class="panel panel-dark" data-collapsed="0">
 			

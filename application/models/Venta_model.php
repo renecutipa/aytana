@@ -41,11 +41,11 @@ class Venta_model extends CI_Model {
 	}
 
 	function getCaja(){
-		$sql = "SELECT SUM(total_price) as caja FROM sales WHERE status = '1' AND DATE(sale_date) = CURDATE()";
+		$sql = "SELECT SUM(total_price) as caja FROM sales WHERE status = '1' AND DATE(sale_date) = '".date('Y-m-d')."'";
 		$query = $this->db->query ( $sql );
 		$row = $query->row();
-
-		return $row->caja;
+		if($row->caja == null) return "0.00";
+		else return $row->caja;
 	}
 
 	function listar_ventas($fecha){
@@ -179,7 +179,15 @@ class Venta_model extends CI_Model {
             'status' => 0
         );
         $this->db->where ( "id_sale", $id );
-        if ($this->db->update ( 'sales', $data )) {
+        $sale = $this->db->update ( 'sales', $data );
+
+        $data = array(
+            'status' => 0
+        );
+        $this->db->where ( "id_sale", $id );
+        $departures = $this->db->update ( 'departures', $data );
+
+        if ($sale && $departures) {
             return true;
         } else {
             return false;

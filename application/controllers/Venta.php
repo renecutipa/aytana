@@ -87,7 +87,9 @@ class Venta extends CI_Controller {
 
         echo json_encode ( $response );
     }
+
+    public function getCaja(){
+		echo $this->Venta_model->getCaja();
+	}
 		
 }
-
-?>
