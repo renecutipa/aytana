@@ -458,14 +458,14 @@ class Producto_model extends CI_Model {
 
 
     function getKardex($id, $month, $year) {
-        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as incomes FROM stock WHERE date < '".$year."-".$month."-01' AND type = 1 AND status = 1");
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as incomes FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 1 AND status = 1");
 	    $saldo_cantidad_entradas = $query->row()->incomes;
-        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as departures FROM stock WHERE date < '".$year."-".$month."-01' AND type = 2 AND status = 1");
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as departures FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 2 AND status = 1");
         $saldo_cantidad_salidas = $query->row()->departures;
 
         $saldo_cantidad = $saldo_cantidad_entradas - $saldo_cantidad_salidas;
 
-        $query = $this->db->query ("SELECT cost_price, date FROM stock WHERE date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
+        $query = $this->db->query ("SELECT cost_price, date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
         $last_cost = $query->row()->cost_price;
         $fecha_saldo = $query->row()->date;
 
