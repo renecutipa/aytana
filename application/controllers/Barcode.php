@@ -33,7 +33,7 @@ class Barcode extends CI_Controller {
         $size = "40";
         $orientation = "horizontal";
         $code_type = "code128";
-        $print = false;
+        $print = true;
         $SizeFactor = 1;
 
         $code_string = "";
@@ -116,9 +116,9 @@ class Barcode extends CI_Controller {
         }
 
         // Pad the edges of the barcode
-        $code_length = 20;
+        $code_length = 10;
         if ($print) {
-            $text_height = 30;
+            $text_height = 14;
         } else {
             $text_height = 0;
         }
@@ -180,29 +180,25 @@ class Barcode extends CI_Controller {
         $pdf->SetMargins(7.55, 7.55 , 7.55);
         $pdf->SetAutoPageBreak(true,7);
         $pdf->AddPage();
-        $pdf->SetFont('COURIER','',12);
+        $pdf->SetFont('COURIER','',18);
         $pdf->Cell(0,0,
-            $pdf->Cell(0,17,"".$nombre,0,1,'C').
-            $pdf->Cell(0,60.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()+3, $pdf->GetY()+5,136,50),0,1,'').
-            $pdf->Cell(0,17,"".$code_number,0,1,'C')
+            $pdf->Cell(0,24,"".$nombre,0,1,'L').
+            $pdf->Cell(0,70.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()-5, $pdf->GetY()+5,136,50),0,1,'')
             ,0,1);
 
         $pdf->Cell(0,0,
-            $pdf->Cell(0,17,"".$nombre,0,1,'C').
-            $pdf->Cell(0,60.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()+3, $pdf->GetY()+5,136,50),0,1,'').
-            $pdf->Cell(0,17,"".$code_number,0,1,'C')
+            $pdf->Cell(0,24,"".$nombre,0,1,'L').
+            $pdf->Cell(0,70.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()-5, $pdf->GetY()+5,136,50),0,1,'')
             ,0,1);
 
         $pdf->Cell(0,0,
-            $pdf->Cell(0,17,"".$nombre,0,1,'C').
-            $pdf->Cell(0,60.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()+3, $pdf->GetY()+5,136,50),0,1,'').
-            $pdf->Cell(0,17,"".$code_number,0,1,'C')
+            $pdf->Cell(0,24,"".$nombre,0,1,'L').
+            $pdf->Cell(0,70.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()-5, $pdf->GetY()+5,136,50),0,1,'')
             ,0,1);
 
         $pdf->Cell(0,0,
-            $pdf->Cell(0,17,"".$nombre,0,1,'C').
-            $pdf->Cell(0,60.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()+3, $pdf->GetY()+5,136,50),0,1,'').
-            $pdf->Cell(0,17,"".$code_number,0,1,'C')
+            $pdf->Cell(0,24,"".$nombre,0,1,'L').
+            $pdf->Cell(0,70.48,$pdf->Image('codebar/'.$code_number.'.png',$pdf->GetX()-5, $pdf->GetY()+5,136,50),0,1,'')
             ,0,1);
         $pdf->Output();
 
