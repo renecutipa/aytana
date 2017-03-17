@@ -516,43 +516,49 @@ function income() {
 
 
 function cargarVentaDiaria(){
+	fecha = $("#fecha_reporte").val();
 	$.ajax({
 		url : UrlBase + "reporte/listar_ventas",
 		type : 'POST',
-		data : 'fecha=',
+		data : 'fecha='+fecha,
 		dataType : "json",
 		success : function(datos) {
-			response = datos.datos;
-			str = "";
-			suma = 0;
-			for (var i = 0; i < response.length; i++) {
-				str+="<tr>"
-				str+= "<td><button class='btn btn-success' onclick='anular_venta("+response[i].id+")'><i class='entypo-popup'></i></button></td>"
-	        	str+="	<td style='text-align:right !important'> "+response[i].id_sale+"</td>"
-                if(response[i].ticket == null || response[i].ticket == 0){
-                    str+="	<td></td>"
-				}else{
-                    str+="	<td style='text-align:right !important'>"+response[i].ticket+"</td>"
+			if(datos.status == "ok"){
+				response = datos.datos;
+				str = "";
+				suma = 0;
+				for (var i = 0; i < response.length; i++) {
+					str+="<tr>"
+					str+= "<td><button class='btn btn-success' onclick='anular_venta("+response[i].id+")'><i class='entypo-popup'></i></button></td>"
+					str+="	<td style='text-align:right !important'> "+response[i].id_sale+"</td>"
+					if(response[i].ticket == null || response[i].ticket == 0){
+						str+="	<td></td>"
+					}else{
+						str+="	<td style='text-align:right !important'>"+response[i].ticket+"</td>"
+					}
+					str+="	<td>"+response[i].name+"<br>"+response[i].dni_ruc+"<br>"+response[i].address+"</td>"
+					str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_price+"</td>"
+					str+="	<td>"+response[i].id_user+"</td>"
+					str+="	<td>"+response[i].sale_date+"</td>"
+					if(response[i].status == 1){
+						str+="	<td><span class='label label-success'>CORRECTO</span></td>"
+					}else{
+						str+="	<td><span class='label label-danger'>ANULADO</span></td>"
+					}
+
+					str+="</tr>"
+					if(response[i].status == 1){
+						suma += parseFloat(response[i].total_price);
+					}
 				}
-	        	str+="	<td>"+response[i].name+"<br>"+response[i].dni_ruc+"<br>"+response[i].address+"</td>"
-	        	str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_price+"</td>"
-	        	str+="	<td>"+response[i].id_user+"</td>"
-	        	str+="	<td>"+response[i].sale_date+"</td>"
-	        	if(response[i].status == 1){
-	        		str+="	<td><span class='label label-success'>CORRECTO</span></td>"
-	        	}else{
-	        		str+="	<td><span class='label label-danger'>ANULADO</span></td>"
-	        	}
-	        	
-	        	str+="</tr>"
-                if(response[i].status == 1){
-					suma += parseFloat(response[i].total_price);
-	        	}
+
+				$('#total_sale').html("S/. "+suma.toFixed(2));
+
+				$('#sales_list tbody').html(str);
+			}else{
+                $('#total_sale').html("S/. 0.00");
+                $('#sales_list tbody').html("<tr><td colspan='8'>No se registran datos</td></tr>");
 			}
-
-            $('#total_sale').html("S/. "+suma.toFixed(2));
-
-			$('#sales_list tbody').html(str);
 		}
 	});
 }
@@ -585,67 +591,84 @@ function detalleProducto(id) {
 }
 
 
-function getKardex(){
+function getKardex(id,month,year){
     $.ajax({
         url : UrlBase + "producto/getKardex",
         type : 'GET',
-        data : 'id=1',
+        data : 'id='+id+'&month='+month+'&year='+year,
         dataType : "json",
         success : function(data) {
-            response = data.datos;
-            str = "";
-            last_quantity = 0;
-            last_unit_price = 0.00;
-            last_total_val = last_quantity * last_unit_price;
+        	if(data.status == "ok"){
+				response = data.datos;
+				str = "";
+				last_quantity = parseInt(data.saldo_cantidad);
+				last_unit_price = parseFloat(data.saldo_costo).toFixed(2);
+				last_total_val = last_quantity * last_unit_price;
 
-            for (var i = 0; i < response.length; i++) {
-                str+="<tr>";
-                str+="<td>25/12/2017</td>";
-                str+="<td>COMPRA, por venta 0001</td>";
-                if(response[i].id_income == null) {
-                    last_quantity -=  parseInt(response[i].quantity);
-					str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
-                    str += "<td style='text-align: right'>"+response[i].saled_price+"</td>";
-                    str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].saled_price)).toFixed(2)+"</td>";
-                    str += "<td style='text-align: right'>"+last_quantity+"</td>";
-                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
-                    str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
-                }else if (response[i].id_sale == null){
-                    last_quantity +=  parseInt(response[i].quantity);
-                    str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
-                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
-                    str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
-                    str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'></td>";
-                    str += "<td style='text-align: right'>"+last_quantity+"</td>";
-                    str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
-                    str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+				for (var i = 0; i < response.length; i++) {
+					str+="<tr>";
+					str+="<td>"+response[i].date+"</td>";
+					if(response[i].id_income == null) {
+						last_quantity -=  parseInt(response[i].quantity);
+                        str+="<td style='font-size: 10px;'>["+response[i].susername+"] VENTA "+response[i].id_sale+"<br>"+response[i].sdocument_type+"</td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
+						str += "<td style='text-align: right'>"+response[i].saled_price+"</td>";
+						str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].saled_price)).toFixed(2)+"</td>";
+						str += "<td style='text-align: right'>"+last_quantity+"</td>";
+						str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+						str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+					}else if (response[i].id_sale == null){
+                        str+="<td style='font-size: 10px;'>["+response[i].iusername+"] COMPRA "+response[i].id_income+"<br>"+response[i].idocument_type+" "+response[i].idocument_number+" - "+response[i].provider+"</td>";
+						last_quantity +=  parseInt(response[i].quantity);
+						str += "<td style='text-align: right'>"+response[i].quantity+"</td>";
+						str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+						str += "<td style='text-align: right'>"+(parseFloat(response[i].quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'></td>";
+						str += "<td style='text-align: right'>"+last_quantity+"</td>";
+						str += "<td style='text-align: right'>"+response[i].cost_price+"</td>";
+						str += "<td style='text-align: right'>"+(parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2)+"</td>";
+					}
+					str+="</tr>";
+
+                    last_unit_price = response[i].cost_price;
+                    last_total_val = (parseFloat(last_quantity)*parseFloat(response[i].cost_price)).toFixed(2);
 				}
-                str+="</tr>";
 
-            }
+				$('#kardex tbody').html(str);
+				saldo = "";
+                saldo += "<tr>";
+                saldo += "<td>"+data.fecha_saldo+"</td>";
+                saldo += "<td>SALDO ANTERIOR</td>";
+                saldo += "<td></td>";
+                saldo += "<td></td>";
+                saldo += "<td></td>";
+                saldo += "<td></td>";
+                saldo += "<td></td>";
+                saldo += "<td></td>";
+                saldo += "<td style='text-align: right'>"+data.saldo_cantidad+"</td>";
+                saldo += "<td style='text-align: right'>"+data.saldo_costo+"</td>";
+                saldo += "<td style='text-align: right'>"+(parseFloat(data.saldo_cantidad)*parseFloat(data.saldo_costo)).toFixed(2)+"</td>";
+                saldo += "</tr>";
+                $('#kardex tbody').prepend(saldo);
 
-            $('#kardex tbody').html(str);
-
-            var foot = "";
-            foot += "<tr>"
-            foot += "<td></td>";
-            foot += "<td>INVENTARIO FINAL</td>";
-            foot += "<td></td>";
-            foot += "<td></td>";
-            foot += "<td></td>";
-            foot += "<td></td>";
-            foot += "<td></td>";
-            foot += "<td></td>";
-            foot += "<td style='text-align: right'>"+last_quantity+"</td>";
-            foot += "<td style='text-align: right'></td>";
-            foot += "<td style='text-align: right'></td>";
-            foot += "</tr>";
-            $('#kardex tfoot').html(foot);
+				var foot = "";
+				foot += "<tr>"
+				foot += "<td></td>";
+				foot += "<td style='color: #000; font-size: 20px; ' colspan='7'>INVENTARIO FINAL</td>";
+				foot += "<td style='color: #000; font-size: 20px; text-align: right'>"+last_quantity+"</td>";
+				foot += "<td style='color: #000; font-size: 20px; text-align: right'>"+last_unit_price+"</td>";
+				foot += "<td style='color: #000; font-size: 20px; text-align: right'>"+last_total_val+"</td>";
+				foot += "</tr>";
+				$('#kardex tfoot').html(foot);
+        	}else{
+                $('#kardex tbody').html("<tr><td colspan='11'>"+data.message+"</td></tr>");
+                $('#kardex tfoot').html("");
+			}
         }
     });
 }
@@ -748,4 +771,41 @@ function generarBarcode(){
 	}else{
 		alert("Seleccionar elemento");
 	}
+}
+
+
+function getProductByCode(){
+	codigo = $("#search_codigo").val();
+	if(codigo != undefined){
+        $.ajax({
+            url : UrlBase + "producto/getProductByCode",
+            type : 'GET',
+            data : 'codigo='+codigo,
+            dataType : "json",
+            success : function(data) {
+            	if(data != false){
+            		str = "";
+                	str += "<tr id='product_info'>";
+                    str += "<td ><b>CODIGO</b></td>";
+                    str += "<td colspan='3'>"+data.code+"</td>";
+                    str += "<td colspan='1'><b>PRODUCTO</b></td>";
+                    str += "<td colspan='6'>"+data.name+"</td>";
+                    str += "</tr>";
+                    $("#product_info").remove();
+            		$("#kardex thead").prepend(str);
+
+					var month = $("#search_month").val();
+					var year = $("#search_year").val();
+					if(month != "" && year != ""){
+						getKardex(data.id_product, month, year);
+					}
+
+				}else{
+            		alert("No se encuentra el producto");
+				}
+            }
+        });
+	}else{
+        alert("Debe de ingresar el c&oacute;digo");
+    }
 }

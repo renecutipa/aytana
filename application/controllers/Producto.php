@@ -135,7 +135,14 @@ class Producto extends CI_Controller {
 
 	public function getKardex(){
         $id = $this->input->get ('id');
-        echo $this->Producto_model->getKardex($id);
+        $month = $this->input->get ('month');
+        $year = $this->input->get ('year');
+        echo $this->Producto_model->getKardex($id, $month, $year);
+	}
+
+	public function getProductByCode(){
+		$codigo = $this->input->get("codigo");
+		echo json_encode($this->Producto_model->getProductByCode($codigo));
 	}
 }
 

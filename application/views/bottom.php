@@ -37,6 +37,7 @@
 	<script src="assets/js/datatables/dataTables.select.min.js"></script>
 	<script src="assets/js/select2/select2.min.js"></script>
 	<script src="assets/js/bootstrap-dialog.js"></script>
+        <script src="assets/js/bootstrap-datepicker.js"></script>
 
 	<!--script src="assets/js/neon-charts.js"></script-->
 

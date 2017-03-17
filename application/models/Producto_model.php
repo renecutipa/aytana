@@ -29,6 +29,17 @@ class Producto_model extends CI_Model {
 		}
 	}
 
+    function getProductByCode($codigo) {
+        $q = "SELECT * FROM products WHERE code = '" . $codigo . "'";
+        $query = $this->db->query ( $q );
+
+        if ($query->num_rows () == 1) {
+            return $query->row ();
+        }else{
+            return false;
+        }
+    }
+
 	function getMarca($id){
         $q = "SELECT * FROM brands WHERE id_brand = '".$id."'";
         $query = $this->db->query ( $q );
@@ -390,6 +401,7 @@ class Producto_model extends CI_Model {
                     'id_product' => $id[$i],
                     'quantity' => $cantidad[$i],
                     'date' => date('Y-m-d h:i:s'),
+                    'cost_price' => $precioc[$i],
                     'status' => '1',
                     'id_user' => $id_user
 
@@ -445,8 +457,20 @@ class Producto_model extends CI_Model {
 	}
 
 
-    function getKardex($id) {
-        $query = $this->db->query ("SELECT type,id_product, id_sale, id_income, quantity, date, cost_price, saled_price FROM stock WHERE status = 1");
+    function getKardex($id, $month, $year) {
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as incomes FROM stock WHERE date < '".$year."-".$month."-01' AND type = 1 AND status = 1");
+	    $saldo_cantidad_entradas = $query->row()->incomes;
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as departures FROM stock WHERE date < '".$year."-".$month."-01' AND type = 2 AND status = 1");
+        $saldo_cantidad_salidas = $query->row()->departures;
+
+        $saldo_cantidad = $saldo_cantidad_entradas - $saldo_cantidad_salidas;
+
+        $query = $this->db->query ("SELECT cost_price, date FROM stock WHERE date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
+        $last_cost = $query->row()->cost_price;
+        $fecha_saldo = $query->row()->date;
+
+
+        $query = $this->db->query ("SELECT s.type,s.id_product, s.id_sale, s.id_income, s.quantity, s.date, s.cost_price, s.saled_price,us.user_name as susername,ui.user_name as iusername,a.document_type as sdocument_type ,i.document_type as idocument_type,i.document_number as idocument_number,i.provider FROM stock as s LEFT JOIN sales as a ON s.id_sale = a.id_sale LEFT JOIN user as us ON us.id_user = a.id_user LEFT JOIN incomes as i ON s.id_income = i.id_income LEFT JOIN user as ui ON ui.id_user = i.id_user WHERE	s.id_product = '".$id."' AND MONTH(s.date) = '".$month."' AND YEAR(s.date) = '".$year."' AND s.status = 1");
 
         $data="";
         if ($query->num_rows () > 0) {
@@ -459,11 +483,20 @@ class Producto_model extends CI_Model {
                 $data [$i] ["date"] = $row->date;
                 $data [$i] ["cost_price"] = $row->cost_price;
                 $data [$i] ["saled_price"] = $row->saled_price;
+                $data [$i] ["susername"] = $row->susername;
+                $data [$i] ["iusername"] = $row->iusername;
+                $data [$i] ["sdocument_type"] = $row->sdocument_type;
+                $data [$i] ["idocument_type"] = $row->idocument_type;
+                $data [$i] ["idocument_number"] = $row->idocument_number;
+                $data [$i] ["provider"] = $row->provider;
 
                 $i ++;
             }
         }
         if($data){
+            $response ['saldo_cantidad'] = $saldo_cantidad;
+            $response ['saldo_costo'] = $last_cost;
+            $response ['fecha_saldo'] = $fecha_saldo;
             $response ['datos'] = $data;
             $response ['status'] = "ok";
             $response ['message'] = "Operacion realizada con exito";

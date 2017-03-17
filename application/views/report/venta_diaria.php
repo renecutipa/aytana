@@ -45,7 +45,19 @@ if (isset($user->username)) {
                     </ul>
                 </div>
             </nav>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">FECHA DE REPORTE</label>
 
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input id="fecha_reporte" type="text" onchange="cargarVentaDiaria()" class="form-control datepicker" data-format="yyyy-mm-dd" value="<?php echo date("Y-m-d")?>">
+
+                        <div class="input-group-addon">
+                            <a href="#"><i class="entypo-calendar"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <h2>Monto Vendido: <span id="total_sale"></span></h2>
             <table class="table table-bordered stripe oscuro" id="sales_list">
                 <thead>
@@ -68,10 +80,45 @@ if (isset($user->username)) {
 
         </div>
         <div class="tab-pane" id="kardex">
-            <button class="btn btn-success" onclick="getKardex();">Get</button>
+            <fieldset>
+                <div class="form-group col-xs-6 col-sm-6">
+                    <label>C&oacute;digo</label>
+                    <input id="search_codigo" class="form-control" type="text" />
+                </div>
+                <div class="form-group col-xs-2 col-sm-2">
+                    <label>Mes</label>
+                    <select id="search_month" class="form-control">
+                        <option value=""> - Seleccione - </option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Setiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-2 col-sm-2">
+                    <label>A&ntilde;o</label>
+                    <input id="search_year" class="form-control" type="text" />
+                </div>
+                <div class="form-group col-xs-2 col-sm-2">
+                    <br>
+                    <button class="btn btn-success btn-lg" onclick="getProductByCode();">Buscar</button>
+                </div>
+
+            </fieldset>
+
+            <!--button class="btn btn-success" onclick="getKardex();">Get</button-->
             <table width="100%" class="table table-bordered stripe oscuro" id="kardex">
+
                 <thead>
-                    <tr>
+                    <!--tr>
                         <td colspan="2" width="25%">Articulo</td>
                         <td colspan="3" width="25%">AAA</td>
                         <td colspan="3" width="25%">Existencia Mínima</td>
@@ -82,7 +129,7 @@ if (isset($user->username)) {
                         <td colspan="3" width="25%">f</td>
                         <td colspan="3" width="25%">Existencia Máxima</td>
                         <td colspan="3" width="25%">f</td>
-                    </tr>
+                    </tr-->
                     <tr>
                         <td rowspan="2" width="8%">FECHA</td>
                         <td rowspan="2">DETALLE</td>
@@ -104,34 +151,9 @@ if (isset($user->username)) {
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>25/12/2017</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>a</td>
-                </tr>
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td></td>
-                        <td>INVENTARIO FINAL</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+
                 </tfoot>
 
 
