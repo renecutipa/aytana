@@ -465,9 +465,14 @@ class Producto_model extends CI_Model {
 
         $saldo_cantidad = $saldo_cantidad_entradas - $saldo_cantidad_salidas;
 
-        $query = $this->db->query ("SELECT IFNULL(cost_price,0) as cost_price, IFNULL(date,'') as date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
-        $last_cost = $query->row()->cost_price;
-        $fecha_saldo = $query->row()->date;
+        $query = $this->db->query ("SELECT cost_price, date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
+        if($query->num_rows() > 0){
+	        $last_cost = $query->row()->cost_price;
+	        $fecha_saldo = $query->row()->date;
+    	}else{
+    		$last_cost = "0.00";
+	        $fecha_saldo = "";
+    	}
 
 
         $query = $this->db->query ("SELECT s.type,s.id_product, s.id_sale, s.id_income, s.quantity, s.date, s.cost_price, s.saled_price,us.user_name as susername,ui.user_name as iusername,a.document_type as sdocument_type ,i.document_type as idocument_type,i.document_number as idocument_number,i.provider FROM stock as s LEFT JOIN sales as a ON s.id_sale = a.id_sale LEFT JOIN user as us ON us.id_user = a.id_user LEFT JOIN incomes as i ON s.id_income = i.id_income LEFT JOIN user as ui ON ui.id_user = i.id_user WHERE	s.id_product = '".$id."' AND MONTH(s.date) = '".$month."' AND YEAR(s.date) = '".$year."' AND s.status = 1");
