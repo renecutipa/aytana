@@ -21,10 +21,10 @@ if (isset($user->username)) {
 	Desactivar
 	<i class="entypo-cancel"></i>
 </button-->
-<button type="button" class="btn btn-default btn-icon icon-left" onclick="CRUDProducto('show',0)">
+<!--button type="button" class="btn btn-default btn-icon icon-left" onclick="CRUDProducto('show',0)">
 	Mostrar
 	<i class="entypo-eye"></i>
-</button>
+</button-->
 </div>
 <br />
 <div class="form-group">

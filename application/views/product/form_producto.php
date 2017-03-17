@@ -7,18 +7,25 @@
 	<fieldset>
 		<form id="form_product" enctype="multipart/form-data" role="form">
 			<div class="col-xs-8 col-sm-8">
-				
-					<div class="form-group col-xs-4 col-sm-4">
-						<label>Codigo</label>
-						<input name="code" class="form-control" type="text" 
-						<?php if(isset($producto)) echo "value = '".$producto->code."'"?> />
-					</div>		
-					<div class="form-group col-xs-8 col-sm-8">
-						<label>Descripci&oacute;n</label>
-						<input name="name" class="form-control" type="text"
-						<?php if(isset($producto)) echo "value = '".$producto->name."'"?>/>
-					</div>
+                <div>
+                    <div class="form-group col-xs-1 col-sm-1">
+                        <input name="autocode" class="form-control" type="checkbox" id="autocode"
+                            <?php if(!isset($producto)) echo "checked"?> />
+                    </div>
+                    <div class="form-group col-xs-3 col-sm-3">
+                        <label>Codigo</label>
+                        <input name="code" id="code" class="form-control" type="text"
+                            <?php if(isset($producto)) echo "value = '".$producto->code."'"?>
+                            <?php if(!isset($producto)) echo "disabled"?> />
+                    </div>
+                    <div class="form-group col-xs-8 col-sm-8">
+                        <label>Descripci&oacute;n</label>
+                        <input name="name" class="form-control" type="text"
+                        <?php if(isset($producto)) echo "value = '".$producto->name."'"?>/>
+                    </div>
 
+                </div>
+                <div>
 					<div class="form-group col-xs-6 col-sm-6">
 						<select name="id_brand" class="form-control" id="modal_brand" onchange="getModelosModal()">
 							<option value="">- Marca -</option>
@@ -49,6 +56,7 @@
 							?>
 						</select>
 					</div>
+                </div>
 					<div class="form-group col-xs-11 col-sm-11">
 						<select name="id_category" class="form-control" id="modal_category" >
 							<option value="">- Categoria -</option>
@@ -126,5 +134,14 @@
 
 			</div>
 		</form>
+        <script>
+            $('#autocode').change(function(){
+                if ($('#autocode').is(':checked') == true){
+                    $('#code').val('').prop('disabled', true);
+                } else {
+                    $('#code').val('').prop('disabled', false);
+                }
+            });
+        </script>
 	</fieldset>
 </div>

@@ -70,8 +70,16 @@ class Producto extends CI_Controller {
     	$datos = $this->input->post ();
     	$id = $this->input->post ( 'id' ) or "";
 		$oper = $this->input->post ( 'oper' );
+		$autocode = $this->input->post ( 'autocode' ) or "";
 		
 		$datos ['id_user'] = 1;
+
+		if($autocode != ""){
+			$autocode = $this->Producto_model->getAutoCode();
+			$datos['generated_code'] = $autocode;
+			$datos['code'] = "RM".str_pad($autocode, 4, "0", STR_PAD_LEFT);
+            unset ( $datos ['autocode']);
+		}
 
 		unset ( $datos ['id'] );
 		unset ( $datos ['oper'] );

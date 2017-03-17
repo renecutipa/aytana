@@ -474,6 +474,17 @@ class Producto_model extends CI_Model {
 
         return json_encode($response);
     }
+
+    function getAutoCode(){
+        $data = array(
+            'creation_date' => date('Y-m-d H:i:s')
+        );
+        $this->db->insert ( 'generated_codes',$data);
+
+        $code = $this->db->insert_id();
+
+        return $code;
+    }
 }
 
 ?>

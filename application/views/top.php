@@ -54,5 +54,5 @@
 		<!-- MENU -->
 		<?php $this->load->view('menu');?>
 		<!-- MENU END -->
-		<div class="main-content">
+		<div class="main-content" style="height: 700px">
 			
