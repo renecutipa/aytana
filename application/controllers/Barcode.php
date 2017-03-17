@@ -32,7 +32,7 @@ class Barcode extends CI_Controller {
         $text = $this->input->get("id");
         $size = "40";
         $orientation = "horizontal";
-        $code_type = "code128";
+        $code_type = "code128a";
         $print = false;
         $SizeFactor = 1;
 
