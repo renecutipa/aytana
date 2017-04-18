@@ -4,7 +4,7 @@ class Venta_model extends CI_Model {
 		parent::__construct ();
 	}
 	
-	function registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user) {
+	function registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user, $id_store) {
 		$total = 0;
 		for($i=0; $i<count($cantidad); $i++){
 			$pu = $preciou[$i] - ($preciou[$i] * $desc[$i]/100);
@@ -32,6 +32,7 @@ class Venta_model extends CI_Model {
 			'status' => '1',
 			'sale_date' => date('Y-m-d h:i:s'),
 			'id_user' => $id_user,
+			'id_store' => $id_store,
 			'id_ticket' => $ticket
 		);
 		$this->db->insert ( 'sales', $data );
@@ -40,16 +41,16 @@ class Venta_model extends CI_Model {
 		return $idVenta;
 	}
 
-	function getCaja(){
-		$sql = "SELECT SUM(total_price) as caja FROM sales WHERE status = '1' AND DATE(sale_date) = '".date('Y-m-d')."'";
+	function getCaja($id_store){
+		$sql = "SELECT SUM(total_price) as caja FROM sales WHERE status = '1' AND DATE(sale_date) = '".date('Y-m-d')."' AND id_store='".$id_store."'";
 		$query = $this->db->query ( $sql );
 		$row = $query->row();
 		if($row->caja == null) return "0.00";
 		else return $row->caja;
 	}
 
-	function listar_ventas($fecha){
-		$sql = "SELECT s.id_sale, s.name, s.dni_ruc, s.address, s.total_price, s.sale_date, s.status, u.user_name, s.id_ticket FROM sales as s LEFT JOIN user as u ON u.id_user = s.id_user WHERE DATE(s. sale_date) = '".$fecha."' ORDER BY s.id_sale DESC";
+	function listar_ventas($fecha, $id_store){
+		$sql = "SELECT s.id_sale, s.name, s.dni_ruc, s.address, s.total_price, s.sale_date, s.status, u.user_name, s.id_ticket FROM sales as s LEFT JOIN user as u ON u.id_user = s.id_user WHERE DATE(s. sale_date) = '".$fecha."' AND s.id_store = '".$id_store."' ORDER BY s.id_sale DESC";
 		$query = $this->db->query ( $sql );
 		$data="";
 		if ($query->num_rows () > 0) {

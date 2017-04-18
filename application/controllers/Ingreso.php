@@ -17,7 +17,7 @@ class Ingreso extends CI_Controller {
 	
 	public function index() {
 		$data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$data['titulo'] = "Ingresos";
 		$this->load->view ( 'entrance/lista',$data);
 	}
@@ -27,7 +27,7 @@ class Ingreso extends CI_Controller {
 
     public function income(){
         $data['user'] = $this->Auth_model->getLogged();
-        $data['caja'] = $this->Venta_model->getCaja();
+        $data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
         $this->load->view ( 'entrance/provider',$data);
     }
 
@@ -42,6 +42,7 @@ class Ingreso extends CI_Controller {
         $ruc = $this->input->post ("ruc");
 
         $id_user = $this->Auth_model->getLogged()->id_user;
+        $id_store = $this->Auth_model->getLogged()->id_store;
 
         $income_data = array (
         	'id_store' => 1,
@@ -51,14 +52,13 @@ class Ingreso extends CI_Controller {
 			'ruc' => $ruc,
             'date' => date('Y-m-d h:i:s'),
             'status' => '1',
-            'id_user' => $id_user
+            'id_user' => $id_user,
+			'id_store' => $id_store
 
         );
 
-        $id_user = $this->Auth_model->getLogged()->id_user;
 
-
-		$result = $this->Producto_model->ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user);
+		$result = $this->Producto_model->ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user, $id_store);
 
         if ($result) {
             $response ['status'] = "ok";

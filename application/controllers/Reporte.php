@@ -17,18 +17,19 @@ class Reporte extends CI_Controller {
 	
 	public function index() {
 		$data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$data['titulo'] = "Reportes";
 		$this->load->view ( 'report/venta_diaria',$data);
 	}
 
 	public function listar_ventas(){
 		$fecha = $this->input->post( 'fecha');
+        $id_store = $this->Auth_model->getLogged()->id_store;
 
 		if($fecha == ""){
 			$fecha = date('Y-m-d');
 		}
-		$data = $this->Venta_model->listar_ventas($fecha);
+		$data = $this->Venta_model->listar_ventas($fecha, $id_store);
 
 		return $data;
 	}

@@ -17,16 +17,16 @@ class Venta extends CI_Controller {
 	
 	public function index() {
 		$data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$data['titulo'] = "Ventas";
 		$this->load->view ( 'sale/presale',$data);
 	}
 	public function getP(){
-		$this->Producto_model->getListaProductos();
+		$this->Producto_model->getListaProductos($this->Auth_model->getLogged()->id_store   );
 	}
 	public function checkout(){
         $data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();		
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$this->load->view ( 'sale/checkout',$data);	
 	}
 
@@ -44,10 +44,11 @@ class Venta extends CI_Controller {
 		$direccion = $this->input->post ("direccion");
 
 		$id_user = $this->Auth_model->getLogged()->id_user;
+		$id_store = $this->Auth_model->getLogged()->id_store;
 
-		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user);
+		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user, $id_store);
 
-		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta, $id_user);
+		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta, $id_user, $id_store);
 		//COMPROBANTE
 
 		$cmp = $this->Venta_model->emitir_comprobante($idVenta,array_sum($desc));
@@ -89,7 +90,7 @@ class Venta extends CI_Controller {
     }
 
     public function getCaja(){
-		echo $this->Venta_model->getCaja();
+		echo $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 	}
 		
 }

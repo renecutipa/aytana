@@ -29,6 +29,7 @@ class Auth extends CI_Controller {
                 $session_data = array(
                     'id_user' => $result->id_user,
                     'username' => $result->user_name,
+                    'id_store' => $result->id_store,
                     'groups' => $groups
                 );
 

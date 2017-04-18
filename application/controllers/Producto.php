@@ -18,16 +18,16 @@ class Producto extends CI_Controller {
 	
 	public function index() {
         $data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$data['titulo'] = "Productos";
 		$this->load->view ( 'product/lista_productos',$data);
 	}
 	public function getP(){
-		$this->Producto_model->getListaProductos();
+		$this->Producto_model->getListaProductos($this->Auth_model->getLogged()->id_store);
 	}
 
 	public function getStocks(){
-		$this->Producto_model->getListaProductosVenta();
+		$this->Producto_model->getListaProductosVenta($this->Auth_model->getLogged()->id_store);
 	}
 
 	public function handleProduct(){
@@ -137,7 +137,8 @@ class Producto extends CI_Controller {
         $id = $this->input->get ('id');
         $month = $this->input->get ('month');
         $year = $this->input->get ('year');
-        echo $this->Producto_model->getKardex($id, $month, $year);
+        $id_store = $this->Auth_model->getLogged()->id_store;
+        echo $this->Producto_model->getKardex($id, $month, $year, $id_store);
 	}
 
 	public function getProductByCode(){

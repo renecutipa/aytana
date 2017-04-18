@@ -102,7 +102,7 @@ class Producto_model extends CI_Model {
 	}
 	
 
-	function getListaProductos(){
+	function getListaProductos($id_store){
 		// initilize all variable
 		$params = $columns = $totalRecords = $data = array();
 		
@@ -137,16 +137,15 @@ class Producto_model extends CI_Model {
 			if(!empty($params['marca'])){
 				$where.= " AND p.id_brand = '".$params['marca']."'";
 			}
-			if(!empty($params['marca'])){
+			if(!empty($params['modelo'])){
 				$where.= " AND p.id_model = '".$params['modelo']."'";
 			}
-			if(!empty($params['marca'])){
+			if(!empty($params['categoria'])){
 				$where.= " AND p.id_category = '".$params['categoria']."'";
 			}
 		}else{
 			if(!empty($params['marca'])){
-				$where.= " WHERE ";
-				$where.= " p.id_brand = '".$params['marca']."'";
+				$where.= " WHERE p.id_brand = '".$params['marca']."'";
 			}
 			if(!empty($params['modelo'])){
 				$where.= " AND p.id_model = '".$params['modelo']."'";
@@ -161,8 +160,8 @@ class Producto_model extends CI_Model {
 		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price FROM products as p ";
 		$sql.= "LEFT JOIN brands as b ON p.id_brand = b.id_brand ";
 		$sql.= "LEFT JOIN models as m ON p.id_model = m.id_model ";
-		$sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product ";
-		$sql.= " LEFT JOIN view_salidas as d ON p.id_product = d.id_product ";
+		$sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product AND e.id_store = '".$id_store."'";
+		$sql.= " LEFT JOIN view_salidas as d ON p.id_product = d.id_product AND d.id_store = '".$id_store."'";
 		$sql.= " LEFT JOIN prices as r ON p.id_product = r.id_product AND r.status = 1 ";
 		$sqlTot .= $sql;
 		$sqlRec .= $sql;
@@ -221,7 +220,7 @@ class Producto_model extends CI_Model {
 	}
 
 
-	function getListaProductosVenta(){
+	function getListaProductosVenta($id_store){
 		// initilize all variable
 		$params = $columns = $totalRecords = $data = array();
 		
@@ -280,8 +279,8 @@ class Producto_model extends CI_Model {
 		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price FROM products as p ";
 		$sql.= " LEFT JOIN brands as b ON p.id_brand = b.id_brand ";
 		$sql.= " LEFT JOIN models as m ON p.id_model = m.id_model ";
-		$sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product ";
-		$sql.= " LEFT JOIN view_salidas as d ON p.id_product = d.id_product ";
+        $sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product AND e.id_store = '".$id_store."'";
+        $sql.= " LEFT JOIN view_salidas as d ON p.id_product = d.id_product AND d.id_store = '".$id_store."'";
 		$sql.= " LEFT JOIN prices as r ON p.id_product = r.id_product AND r.status = 1 ";
 		$sqlTot .= $sql;
 		$sqlRec .= $sql;
@@ -387,7 +386,7 @@ class Producto_model extends CI_Model {
 		}
 	}
 
-	function ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user){
+	function ingresar_stock($id,$cantidad,$precioc,$preciov, $income_data, $id_user, $id_store){
 
         $this->db->insert('incomes', $income_data);
         $id_income = $this->db->insert_id();
@@ -396,14 +395,14 @@ class Producto_model extends CI_Model {
 		    if($cantidad[$i] > 0 ){
                 $data = array (
                     'type' => 1,
-                    'id_store' => '1',
                     'id_income' => $id_income,
                     'id_product' => $id[$i],
                     'quantity' => $cantidad[$i],
                     'date' => date('Y-m-d h:i:s'),
                     'cost_price' => $precioc[$i],
                     'status' => '1',
-                    'id_user' => $id_user
+                    'id_user' => $id_user,
+                    'id_store' => $id_store
 
                 );
                 $this->db->insert ( 'stock', $data );
@@ -433,12 +432,11 @@ class Producto_model extends CI_Model {
 		return true;
 	}
 
-	function salida_stock($id,$cantidad,$preciou, $precioc, $desc, $id_sale, $id_user){
+	function salida_stock($id,$cantidad,$preciou, $precioc, $desc, $id_sale, $id_user, $id_store){
 		for($i=0; $i<count($id); $i++){
 			$unit_price = $preciou[$i] - ($preciou[$i] * $desc[$i]/100); //CALCULANDO PRECIO DESCONTADO
 			$data = array (
 			    'type' => 2,
-				'id_store' => '1',
 				'id_product' => $id[$i],
                 'id_sale' => $id_sale,
 				'quantity' => $cantidad[$i],
@@ -448,6 +446,7 @@ class Producto_model extends CI_Model {
                 'saled_price' => $unit_price,
                 'discount' => $desc[$i],
 				'status' => '1',
+                'id_store' => $id_store,
 				'id_user' => $id_user
 
 			);
@@ -457,20 +456,25 @@ class Producto_model extends CI_Model {
 	}
 
 
-    function getKardex($id, $month, $year) {
-        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as incomes FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 1 AND status = 1");
+    function getKardex($id, $month, $year, $id_store) {
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as incomes FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 1 AND status = 1 AND id_store = '".$id_store."'");
 	    $saldo_cantidad_entradas = $query->row()->incomes;
-        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as departures FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 2 AND status = 1");
+        $query = $this->db->query("SELECT IFNULL(SUM(quantity),0) as departures FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND type = 2 AND status = 1 AND id_store = '".$id_store."'");
         $saldo_cantidad_salidas = $query->row()->departures;
 
         $saldo_cantidad = $saldo_cantidad_entradas - $saldo_cantidad_salidas;
 
-        $query = $this->db->query ("SELECT IFNULL(cost_price,0) as cost_price, IFNULL(date,'') as date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 ORDER BY date DESC LIMIT 1");
-        $last_cost = $query->row()->cost_price;
-        $fecha_saldo = $query->row()->date;
+        $query = $this->db->query ("SELECT IFNULL(cost_price,0) as cost_price, IFNULL(date,'') as date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 AND id_store = '".$id_store."' ORDER BY date DESC LIMIT 1");
+        if($query->num_rows()>0){
+            $last_cost = $query->row()->cost_price;
+            $fecha_saldo = $query->row()->date;
+        }else{
+            $last_cost = 0.00;
+            $fecha_saldo = "SIN ANTECEDENTE";
+        }
 
 
-        $query = $this->db->query ("SELECT s.type,s.id_product, s.id_sale, s.id_income, s.quantity, s.date, s.cost_price, s.saled_price,us.user_name as susername,ui.user_name as iusername,a.document_type as sdocument_type ,i.document_type as idocument_type,i.document_number as idocument_number,i.provider FROM stock as s LEFT JOIN sales as a ON s.id_sale = a.id_sale LEFT JOIN user as us ON us.id_user = a.id_user LEFT JOIN incomes as i ON s.id_income = i.id_income LEFT JOIN user as ui ON ui.id_user = i.id_user WHERE	s.id_product = '".$id."' AND MONTH(s.date) = '".$month."' AND YEAR(s.date) = '".$year."' AND s.status = 1");
+        $query = $this->db->query ("SELECT s.type,s.id_product, s.id_sale, s.id_income, s.quantity, s.date, s.cost_price, s.saled_price,us.user_name as susername,ui.user_name as iusername,a.document_type as sdocument_type ,i.document_type as idocument_type,i.document_number as idocument_number,i.provider FROM stock as s LEFT JOIN sales as a ON s.id_sale = a.id_sale LEFT JOIN user as us ON us.id_user = a.id_user LEFT JOIN incomes as i ON s.id_income = i.id_income LEFT JOIN user as ui ON ui.id_user = i.id_user WHERE	s.id_product = '".$id."' AND MONTH(s.date) = '".$month."' AND YEAR(s.date) = '".$year."' AND s.status = 1 AND s.id_store = '".$id_store."'");
 
         $data="";
         if ($query->num_rows () > 0) {

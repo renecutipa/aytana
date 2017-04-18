@@ -15,14 +15,14 @@ class Barcode extends CI_Controller {
     }
     public function aux(){
         $data['user'] = $this->Auth_model->getLogged();
-        $data['caja'] = $this->Venta_model->getCaja();
+        $data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
         $data['titulo'] = "Barcode";
         $this->load->view ( 'barcode/barcode',$data);
     }
 	
 	public function index() {
 		$data['user'] = $this->Auth_model->getLogged();
-		$data['caja'] = $this->Venta_model->getCaja();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
 		$data['titulo'] = "Barcode";
 		$this->load->view ( 'barcode/barcode',$data);
 	}

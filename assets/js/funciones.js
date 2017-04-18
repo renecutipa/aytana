@@ -34,6 +34,7 @@ function getCaja(){
 						+ response[i].valor + "</option>";
 			}
 			$("#sale_category").append(str);
+            recargarTabla();
 		}
 	});
 }
@@ -54,7 +55,7 @@ function getModelos() {
 						+ response[i].valor + "</option>";
 			}
 			$("#sale_model").append(str);
-			recargarTabla()
+			recargarTabla();
 		}
 	});
 }
@@ -73,7 +74,7 @@ function getMarcas() {
 						+ response[i].valor + "</option>";
 			}
 			$("#sale_brand").append(str);
-			recargarTabla()
+			recargarTabla();
 		}
 	});
 }

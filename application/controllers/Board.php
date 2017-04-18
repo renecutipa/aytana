@@ -15,7 +15,7 @@ class Board extends CI_Controller {
     {
         $data['titulo'] = $this->titulo;
         $data['user'] = $this->Auth_model->getLogged();
-        $data['caja'] = $this->Venta_model->getCaja();
+        $data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
         //echo $data['caja']; exit;
         $this->load->view('board/admin',$data);
     }
