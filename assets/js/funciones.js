@@ -652,7 +652,7 @@ function getKardex(id,month,year){
                 saldo += "<td></td>";
                 saldo += "<td></td>";
                 saldo += "<td style='text-align: right'>"+data.saldo_cantidad+"</td>";
-                saldo += "<td style='text-align: right'>"+data.saldo_costo+"</td>";
+                saldo += "<td style='text-align: right'>"+parseFloat(data.saldo_costo).toFixed(2)+"</td>";
                 saldo += "<td style='text-align: right'>"+(parseFloat(data.saldo_cantidad)*parseFloat(data.saldo_costo)).toFixed(2)+"</td>";
                 saldo += "</tr>";
                 $('#kardex tbody').prepend(saldo);

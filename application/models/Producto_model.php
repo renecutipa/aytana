@@ -464,6 +464,7 @@ class Producto_model extends CI_Model {
 
         $saldo_cantidad = $saldo_cantidad_entradas - $saldo_cantidad_salidas;
 
+
         $query = $this->db->query ("SELECT IFNULL(cost_price,0) as cost_price, IFNULL(date,'') as date FROM stock WHERE id_product = '".$id."' AND date < '".$year."-".$month."-01' AND status = 1 AND id_store = '".$id_store."' ORDER BY date DESC LIMIT 1");
         if($query->num_rows()>0){
             $last_cost = $query->row()->cost_price;
