@@ -30,6 +30,7 @@ class Auth extends CI_Controller {
                     'id_user' => $result->id_user,
                     'username' => $result->user_name,
                     'id_store' => $result->id_store,
+                    'store' => $result->store,
                     'groups' => $groups
                 );
 

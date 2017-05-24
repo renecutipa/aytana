@@ -46,7 +46,7 @@ class Venta extends CI_Controller {
 		$id_user = $this->Auth_model->getLogged()->id_user;
 		$id_store = $this->Auth_model->getLogged()->id_store;
 
-		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user, $id_store);
+		$idVenta = $this->Venta_model->registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $precioc, $desc, $id_user, $id_store);
 
 		$salida = $this->Producto_model->salida_stock($id,$cantidad,$preciou, $precioc, $desc, $idVenta, $id_user, $id_store);
 		//COMPROBANTE
@@ -88,6 +88,15 @@ class Venta extends CI_Controller {
 
         echo json_encode ( $response );
     }
+
+    public function detalle(){
+    	$id = $this->input->get("id");
+    	$data['id'] = $id;
+    	$data['user'] = $this->Auth_model->getLogged();
+		$data['caja'] = $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);
+    	$data['datos'] = $this->Venta_model->getSaleDetail($id);
+    	$this->load->view ( 'sale/detail',$data);	
+	}
 
     public function getCaja(){
 		echo $this->Venta_model->getCaja($this->Auth_model->getLogged()->id_store);

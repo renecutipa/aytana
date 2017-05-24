@@ -21,9 +21,7 @@
                 str += '<i class="entypo-'+data[i].icon+'"></i>';
                 str += '<span>'+data[i].name+'</span>';
                 str += '</a>';
-                if(data[i].submenu){
-                    str += '<ul><li><a href="#"> <span>Venta de Moto</span></a></li></ul>';
-                }
+
                 str += '</li>';
             }
 
@@ -38,12 +36,13 @@
 	<ul class="nav navbar-right pull-right">
 		<!-- raw links -->
 				<li class="btn-success navbar-caja"><a href="#" id="caja_valor"><?php echo $caja?></a></li>
+                <li class="btn-info navbar-caja"><a id="caja_valor"><?php echo $user->store;?></a></li>
 				<li class="sep"></li>
 				<li>
 				<a href="#" class=""><?php echo $user->username;?></a>
 				</li>
-				
-				<li class="sep"></li>
+
+        <li class="sep"></li>
 				
 				<li>
 					<a href="<?php echo  base_url().'auth/logout'?>">

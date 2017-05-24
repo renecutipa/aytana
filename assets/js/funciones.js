@@ -354,15 +354,15 @@ function calcular_total(){
 }
 
 function anular_venta(id) {
-    var route = "venta/anular";
-    var titulo = "Anular Venta";
+    var route = "venta/detalle?id="+id;
+    var titulo = "Anular Venta - "+id ;
 
     var dialog = new BootstrapDialog({
         title : titulo,
-        message : "¿Desea anular la venta?",
+        message : $("<div></div>").load(route),
         buttons : [ {
             label : 'Anular',
-            cssClass : 'btn btn-red right',
+            cssClass : 'btn btn-red',
             action : function(d) {
                 var frm = $('#form_venta');
 
@@ -385,7 +385,7 @@ function anular_venta(id) {
             }
         }, {
             label : 'Cerrar',
-            cssClass : 'btn btn-default',
+            cssClass : 'btn btn-default right',
             action : function(d) {
                 d.close();
             }
@@ -528,6 +528,8 @@ function cargarVentaDiaria(){
 				response = datos.datos;
 				str = "";
 				suma = 0;
+				neto = 0;
+				ganancia = 0;
 				for (var i = 0; i < response.length; i++) {
 					str+="<tr>"
 					str+= "<td><button class='btn btn-success' onclick='anular_venta("+response[i].id+")'><i class='entypo-popup'></i></button></td>"
@@ -538,6 +540,8 @@ function cargarVentaDiaria(){
 						str+="	<td style='text-align:right !important'>"+response[i].ticket+"</td>"
 					}
 					str+="	<td>"+response[i].name+"<br>"+response[i].dni_ruc+"<br>"+response[i].address+"</td>"
+					str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_neto+"</td>"
+					str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].ganancia+"</td>"
 					str+="	<td style='text-align:right !important; font-size: 16px'>"+response[i].total_price+"</td>"
 					str+="	<td>"+response[i].id_user+"</td>"
 					str+="	<td>"+response[i].sale_date+"</td>"
@@ -550,10 +554,14 @@ function cargarVentaDiaria(){
 					str+="</tr>"
 					if(response[i].status == 1){
 						suma += parseFloat(response[i].total_price);
+						neto += parseFloat(response[i].total_neto);
+						ganancia += parseFloat(response[i].ganancia);
 					}
 				}
 
-				$('#total_sale').html("S/. "+suma.toFixed(2));
+				$('#total_sale').html("<strong>S/. "+suma.toFixed(2)+"</strong>");
+				$('#total_neto').html("<strong>S/. "+neto.toFixed(2)+"</strong>");
+				$('#ganancia').html("<strong>S/. "+ganancia.toFixed(2)+"</strong>");
 
 				$('#sales_list tbody').html(str);
 			}else{
@@ -809,4 +817,8 @@ function getProductByCode(){
 	}else{
         alert("Debe de ingresar el c&oacute;digo");
     }
+}
+
+function getSaleDetail(id){
+	console.log("Vamos a obtener la data del "+id);
 }

@@ -28,9 +28,9 @@ class Auth_model extends CI_Model
 
     public function getChecked($idUser) {
         $query = $this->db->query("
-            SELECT * 
-            FROM user 
-            WHERE id_user = '".$idUser."'");
+            SELECT u.*, s.name as store 
+            FROM user as u LEFT JOIN stores as s ON s.id_store = u.id_store
+            WHERE u.id_user = '".$idUser."'");
 
         $row = $query->row();
 

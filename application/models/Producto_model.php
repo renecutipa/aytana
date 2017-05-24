@@ -128,12 +128,12 @@ class Producto_model extends CI_Model {
 		// check search value exist
 		if( !empty($params['search']['value']) ) {
 			$where .=" WHERE ";
-			$where .=" ( p.id_product LIKE '".$params['search']['value']."%' ";
-			$where .=" OR p.code LIKE '".$params['search']['value']."%' ";
-			$where .=" OR p.name LIKE '".$params['search']['value']."%' ";
-			$where .=" OR b.name LIKE '".$params['search']['value']."%' ";
+			$where .=" ( LPAD(p.id_product,4,'0') LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR p.code LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR p.name LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR b.name LIKE '%".$params['search']['value']."%' ";
 			$where .=" OR m.name LIKE '%".$params['search']['value']."%' ";			
-			$where .=" OR p.location LIKE '".$params['search']['value']."%' )";
+			$where .=" OR p.location LIKE '%".$params['search']['value']."%' )";
 			if(!empty($params['marca'])){
 				$where.= " AND p.id_brand = '".$params['marca']."'";
 			}
@@ -157,7 +157,7 @@ class Producto_model extends CI_Model {
 		}
 		
 		// getting total number records without any search
-		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price FROM products as p ";
+		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price, LPAD(p.id_product,4,'0') as id_product_filled FROM products as p ";
 		$sql.= "LEFT JOIN brands as b ON p.id_brand = b.id_brand ";
 		$sql.= "LEFT JOIN models as m ON p.id_model = m.id_model ";
 		$sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product AND e.id_store = '".$id_store."'";
@@ -201,7 +201,8 @@ class Producto_model extends CI_Model {
 					$row->cantidad,
 					$row->cost_price,
 					$row->sale_price,
-					$row->location
+					$row->location,
+					$row->id_product_filled,
 					
 			);
 			$i++;
@@ -246,10 +247,10 @@ class Producto_model extends CI_Model {
 		// check search value exist
 		if( !empty($params['search']['value']) ) {
 			$where .=" WHERE ";
-			$where .=" ( p.id_product LIKE '".$params['search']['value']."%' ";
-			$where .=" OR p.code LIKE '".$params['search']['value']."%' ";
-			$where .=" OR p.name LIKE '".$params['search']['value']."%' ";
-			$where .=" OR b.name LIKE '".$params['search']['value']."%' ";
+			$where .=" ( LPAD(p.id_product,4,'0') LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR p.code LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR p.name LIKE '%".$params['search']['value']."%' ";
+			$where .=" OR b.name LIKE '%".$params['search']['value']."%' ";
 			$where .=" OR m.name LIKE '%".$params['search']['value']."%' ";			
 			$where .=" OR p.location LIKE '".$params['search']['value']."%' )";
 			if(!empty($params['marca']) ){
@@ -276,7 +277,7 @@ class Producto_model extends CI_Model {
 		}
 		
 		// getting total number records without any search
-		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price FROM products as p ";
+		$sql = "SELECT p.*, b.name as brand_name, m.name as model_name, (IFNULL(SUM(e.cantidad),0)-IFNULL(SUM(d.cantidad),0)) as cantidad, r.cost_price, r.sale_price, LPAD(p.id_product,4,'0') as id_product_filled FROM products as p ";
 		$sql.= " LEFT JOIN brands as b ON p.id_brand = b.id_brand ";
 		$sql.= " LEFT JOIN models as m ON p.id_model = m.id_model ";
         $sql.= " LEFT JOIN view_entradas as e ON p.id_product = e.id_product AND e.id_store = '".$id_store."'";
@@ -318,7 +319,8 @@ class Producto_model extends CI_Model {
 					$row->cantidad,
 					$row->cost_price,
 					$row->sale_price,
-					$row->name			
+					$row->name,
+					$row->id_product_filled,		
 			);
 			$i++;
 			
@@ -328,7 +330,7 @@ class Producto_model extends CI_Model {
 				"draw"            => intval( $params['draw'] ),
 				"recordsTotal"    => intval( $totalRecords ),
 				"recordsFiltered" => intval($totalRecords),
-				"SQL"			  => $sqlTot,
+				//"SQL"			  => $sqlTot,
 				"data"            => $data   // total data array
 		);
 		

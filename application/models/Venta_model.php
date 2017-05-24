@@ -4,11 +4,14 @@ class Venta_model extends CI_Model {
 		parent::__construct ();
 	}
 	
-	function registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $desc, $id_user, $id_store) {
+	function registrar_venta($tipo, $nombre, $dni_ruc, $direccion, $cantidad, $preciou, $precioc, $desc, $id_user, $id_store) {
 		$total = 0;
+		$total_neto = 0;
+		$ganancia = 0;
 		for($i=0; $i<count($cantidad); $i++){
 			$pu = $preciou[$i] - ($preciou[$i] * $desc[$i]/100);
 
+			$total_neto += $cantidad[$i]*$precioc[$i];
 			$total += $cantidad[$i]*$pu;
 		}
 		$ticket = NULL;
@@ -19,18 +22,21 @@ class Venta_model extends CI_Model {
 			$ticket = $this->db->insert_id();
             $tipo_documento = 'TICKET DE VENTA';
 		}
+		$ganancia = $total - $total_neto;
 
 		$data = array(
 			'id_store' => '1',
 			'total_products' => count($cantidad),
 			'total_price' => $total,
+			'total_neto'=>$total_neto,
+			'ganancia' => $ganancia,
 			'name' => $nombre,
 			'dni_ruc' => $dni_ruc,
 			'address' => $direccion,
 			'document_type' => $tipo_documento,
 			'document_number' => $ticket,
 			'status' => '1',
-			'sale_date' => date('Y-m-d h:i:s'),
+			'sale_date' => date('Y-m-d H:i:s'),
 			'id_user' => $id_user,
 			'id_store' => $id_store,
 			'id_ticket' => $ticket
@@ -50,7 +56,7 @@ class Venta_model extends CI_Model {
 	}
 
 	function listar_ventas($fecha, $id_store){
-		$sql = "SELECT s.id_sale, s.name, s.dni_ruc, s.address, s.total_price, s.sale_date, s.status, u.user_name, s.id_ticket FROM sales as s LEFT JOIN user as u ON u.id_user = s.id_user WHERE DATE(s. sale_date) = '".$fecha."' AND s.id_store = '".$id_store."' ORDER BY s.id_sale DESC";
+		$sql = "SELECT s.id_sale, s.name, s.dni_ruc, s.address, IFNULL(s.total_neto,0.00) as total_neto, IFNULL(s.ganancia,0.00) as ganancia,s.total_price, s.sale_date, s.status, u.user_name, s.id_ticket FROM sales as s LEFT JOIN user as u ON u.id_user = s.id_user WHERE DATE(s. sale_date) = '".$fecha."' AND s.id_store = '".$id_store."' ORDER BY s.id_sale DESC";
 		$query = $this->db->query ( $sql );
 		$data="";
 		if ($query->num_rows () > 0) {
@@ -62,6 +68,8 @@ class Venta_model extends CI_Model {
 				$data [$i] ["name"] = $row->name;
 				$data [$i] ["dni_ruc"] = $row->dni_ruc;
 				$data [$i] ["address"] = $row->address;
+				$data [$i] ["total_neto"] = $row->total_neto;
+				$data [$i] ["ganancia"] = $row->ganancia;
 				$data [$i] ["total_price"] = $row->total_price;
 				$data [$i] ["id_user"] = $row->user_name;
 				$data [$i] ["sale_date"] = $row->sale_date;
@@ -109,11 +117,11 @@ class Venta_model extends CI_Model {
 
 
 
-			$cmp.="----------------------------------------\n";
+			$cmp.="----------------------------------------@@";
 			$cmp.=str_pad($venta->document_type, 40, " ", STR_PAD_BOTH)."\n";
-			$cmp.="----------------------------------------\n";
-			$cmp.="COD   DESCRIPCION           Cant Importe\n";
-			$cmp.="----------------------------------------\n";
+			$cmp.="----------------------------------------@@";
+			$cmp.="COD   DESCRIPCION           Cant Importe@@";
+			$cmp.="----------------------------------------@@";
 			//     1234567890123456789012345678901234567890
 			if ($query->num_rows () > 0) {
 				$i = 0;
@@ -122,14 +130,14 @@ class Venta_model extends CI_Model {
 					$cmp.=str_pad($row->id, 6)
 						.substr(str_pad($row->name, 22),0,21)
 						.str_pad($row->quantity,4,' ',STR_PAD_LEFT)
-						.str_pad(number_format($row->quantity*$row->saled_price,2),9,' ',STR_PAD_LEFT)."\n";
+						.str_pad(number_format($row->quantity*$row->saled_price,2),9,' ',STR_PAD_LEFT)."@@";
 					$i++;
 				}
 			}
-			$cmp.="----------------------------------------\n";
-			$cmp.=str_pad("TOTAL :",30,' ',STR_PAD_LEFT).str_pad(number_format($venta->total_price, 2), 10, ' ',STR_PAD_LEFT)."\n";
+			$cmp.="----------------------------------------@@";
+			$cmp.=str_pad("TOTAL :",30,' ',STR_PAD_LEFT).str_pad(number_format($venta->total_price, 2), 10, ' ',STR_PAD_LEFT)."@@";
 
-			$cmp.=$venta->sale_date."\n";
+			$cmp.=$venta->sale_date."@@";
 
 
 			return $cmp;
@@ -147,11 +155,11 @@ class Venta_model extends CI_Model {
 
 
 
-			$cmp.="----------------------------------------\n";
+			$cmp.="----------------------------------------@@";
 			$cmp.=str_pad($venta->document_type, 40, " ", STR_PAD_BOTH)."\n";
-            $cmp.="----------------------------------------\n";
-			$cmp.="COD  DESCRIPCION   %D   P.U. Can. Subtot\n";
-			$cmp.="----------------------------------------\n";
+            $cmp.="----------------------------------------@@";
+			$cmp.="COD  DESCRIPCION   %D   P.U. Can. Subtot@@";
+			$cmp.="----------------------------------------@@";
 			//     1234567890123456789012345678901234567890
 			if ($query->num_rows () > 0) {
 				$i = 0;
@@ -163,14 +171,14 @@ class Venta_model extends CI_Model {
 					.str_pad(number_format($row->saled_price,2),7,' ',STR_PAD_LEFT)
 					.str_pad($row->quantity,4,' ',STR_PAD_LEFT)
 					.str_pad(number_format($row->quantity*$row->saled_price,2),8,' ',STR_PAD_LEFT)
-					."\n";
+					."@@";
 					$i++;
 				}
 			}
 			$cmp.="----------------------------------------\n";
-			$cmp.=str_pad("TOTAL :",30,' ',STR_PAD_LEFT).str_pad(number_format($venta->total_price, 2), 10, ' ',STR_PAD_LEFT)."\n";
+			$cmp.=str_pad("TOTAL :",30,' ',STR_PAD_LEFT).str_pad(number_format($venta->total_price, 2), 10, ' ',STR_PAD_LEFT)."@@";
 
-			$cmp.=$venta->sale_date."\n";
+			$cmp.=$venta->sale_date."@@";
 
 
 			return $cmp;
@@ -197,6 +205,27 @@ class Venta_model extends CI_Model {
             return false;
         }
     }
+
+    function getSaleDetail($id){
+		$sql = "SELECT p.code, p.name, s.quantity, s.saled_price, s.discount, s.quantity*s.saled_price as total 
+from stock as s left join products as p ON s.id_product = p.id_product WHERE s.id_sale=".$id;
+		$query = $this->db->query ( $sql );
+		$data="";
+		if ($query->num_rows () > 0) {
+			$i = 0;
+			foreach ( $query->result () as $row ) {
+				$data [$i] ["code"] = $row->code;
+                $data [$i] ["name"] = $row->name;
+				$data [$i] ["quantity"] = $row->quantity;
+				$data [$i] ["saled_price"] = $row->saled_price;
+				$data [$i] ["discount"] = $row->discount;
+				$data [$i] ["total"] = $row->total;
+
+				$i ++;
+			}
+		}
+		return $data;
+	}
 }
 
 ?>

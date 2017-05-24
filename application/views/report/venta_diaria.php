@@ -31,20 +31,7 @@ if (isset($user->username)) {
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane active" id="venta_dia">
-            <nav class="navbar navbar-inverse" role="navigation">
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="javascript:imprimir_div('venta_dia')">Imprimir</a>
-                        </li>
-                        <!--li>
-                            <a href="#">Link</a>
-                        </li-->
-
-                    </ul>
-                </div>
-            </nav>
+        <div class="tab-pane active" id="venta_dia">            
             <div class="form-group">
                 <label class="col-sm-1 control-label">FECHA DE REPORTE</label>
 
@@ -58,15 +45,17 @@ if (isset($user->username)) {
                     </div>
                 </div>
             </div>
-            <h2>Monto Vendido: <span id="total_sale"></span></h2>
+            <h2>Total: <span id="total_sale"></span> -- Neto: <span id="total_neto"></span> -- Ganancia: <span id="ganancia"></span></h2>
             <table class="table table-bordered stripe oscuro" id="sales_list">
                 <thead>
                 <tr class="encabezado">
                     <th>-</th>
                     <th style="width:10%">Venta Nro.</th>
                     <th style="width:10%">Ticket</th>
-                    <th style="width:35%">Cliente</th>
-                    <th style="width:15%">P. Total</th>
+                    <th style="width:30%">Cliente</th>
+                    <th style="width:10%">P. Neto</th>
+                    <th style="width:10%">Ganancia</th>
+                    <th style="width:10%">P. Total</th>
                     <th style="width:15%">Vendedor</th>
                     <th style="width:10%">Fecha</th>
                     <th style="width:5%">Estado</th>
@@ -89,7 +78,7 @@ if (isset($user->username)) {
                     <label>Mes</label>
                     <select id="search_month" class="form-control">
                         <option value=""> - Seleccione - </option>
-                        <option value="01">Enero</option>
+                        <option value="01">Enero    </option>
                         <option value="02">Febrero</option>
                         <option value="03">Marzo</option>
                         <option value="04">Abril</option>

@@ -1,8 +1,6 @@
 
 <?php
 if (isset($user->username)) {
-    $username = $user->username;
-    $groups = $user->groups;
 } else {
     header("location: auth");
 }
